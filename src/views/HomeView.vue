@@ -4,6 +4,7 @@ import HeroSearch from '@/components/HeroSearch.vue'
 import QuickAccessCards from '@/components/QuickAccessCards.vue'
 import TransparencyNumbers from '@/components/TransparencyNumbers.vue'
 import MostAccessedServices from '@/components/MostAccessedServices.vue'
+import InstitutionalLogos from '@/components/InstitutionalLogos.vue'
 import AppFooter from '@/components/AppFooter.vue'
 </script>
 
@@ -15,6 +16,7 @@ import AppFooter from '@/components/AppFooter.vue'
       <QuickAccessCards />
       <TransparencyNumbers />
       <MostAccessedServices />
+      <InstitutionalLogos />
     </main>
     <AppFooter />
   </div>
