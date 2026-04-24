@@ -8,6 +8,11 @@ function onSearch() {
   if (!searchQuery.value.trim()) return
   console.log('Buscando:', searchQuery.value)
 }
+
+function searchTerm(term: string) {
+  searchQuery.value = term
+  onSearch()
+}
 </script>
 
 <template>
@@ -21,25 +26,27 @@ function onSearch() {
       </p>
 
       <form
-        class="flex items-stretch max-w-xl mx-auto mb-4 shadow-md rounded-lg overflow-hidden"
+        class="flex items-stretch max-w-xl mx-auto mb-4 shadow-md rounded-xl border border-gray-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all bg-white overflow-hidden"
         @submit.prevent="onSearch"
       >
         <label for="hero-search" class="sr-only">Buscar informações no Portal</label>
-        <div class="flex-1 flex items-center bg-white px-3 py-0 sm:px-4">
-          <i class="pi pi-search text-gray-400 mr-2 sm:mr-3 flex-shrink-0 text-sm" aria-hidden="true" />
+        <div class="flex-1 flex items-center px-4">
+          <i class="pi pi-search text-gray-400 mr-3 flex-shrink-0 text-sm" aria-hidden="true" />
           <input
             id="hero-search"
             v-model="searchQuery"
-            type="search"
+            type="text"
             placeholder="Digite o que deseja encontrar..."
-            class="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent py-3"
+            class="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent py-3.5 border-none shadow-none ring-0"
             autocomplete="off"
+            enterkeyhint="search"
           />
         </div>
         <button
           type="submit"
-          class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-4 sm:px-6 py-3 text-sm transition-colors flex-shrink-0 min-w-[72px]"
+          class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-5 sm:px-7 py-3.5 text-sm transition-colors flex-shrink-0"
         >
+          <i class="pi pi-search mr-1.5 text-xs" aria-hidden="true" />
           Buscar
         </button>
       </form>
@@ -50,7 +57,7 @@ function onSearch() {
           v-for="term in quickSearches"
           :key="term"
           class="text-xs text-blue-600 hover:text-blue-800 border border-blue-200 rounded-full px-3 py-1.5 bg-white transition-colors min-h-[36px]"
-          @click="searchQuery = term; onSearch()"
+          @click="searchTerm(term)"
         >
           {{ term }}
         </button>

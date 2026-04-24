@@ -22,7 +22,7 @@ const cards: AccessCard[] = [
 <template>
   <section class="py-4 px-4 sm:py-8" aria-label="Acesso rápido às informações">
     <div class="container">
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-6">
+      <div class="bg-white rounded-2xl shadow-md border border-gray-300 p-3 sm:p-6">
         <!--
           Mobile: 4 colunas (ícone compacto)
           sm+:    8 colunas (uma linha)
@@ -32,10 +32,10 @@ const cards: AccessCard[] = [
             v-for="card in cards"
             :key="card.label"
             :href="card.href"
-            class="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-4 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition-colors group text-center min-h-[72px] sm:min-h-[auto]"
+            class="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-4 rounded-xl border border-transparent hover:border-blue-300 hover:bg-blue-50 active:bg-blue-100 transition-all group text-center min-h-[72px] sm:min-h-[auto]"
             :aria-label="`${card.label} — ${card.description}`"
           >
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-white transition-colors shadow-sm flex-shrink-0">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-white group-hover:ring-2 group-hover:ring-blue-300 transition-all shadow-sm flex-shrink-0">
               <i :class="[card.icon, card.color]" class="text-base sm:text-xl" aria-hidden="true" />
             </div>
             <span class="text-[10px] sm:text-xs font-semibold text-gray-700 group-hover:text-blue-700 transition-colors leading-tight">

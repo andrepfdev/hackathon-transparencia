@@ -49,21 +49,67 @@ html.a11y-grayscale {
   filter: grayscale(100%);
 }
 
-/* Alto contraste — fundo escuro, texto claro, bordas evidentes */
-html.a11y-high-contrast {
-  filter: contrast(175%) brightness(1.1) saturate(0);
-}
+/* Alto contraste — fundo preto, texto branco, sem filtros CSS */
 html.a11y-high-contrast body {
   background-color: #000 !important;
   color: #fff !important;
 }
-html.a11y-high-contrast a {
+html.a11y-high-contrast *:not(img):not(video):not(svg):not([class*="pi-"]) {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast a,
+html.a11y-high-contrast a * {
   color: #ffff00 !important;
   text-decoration: underline !important;
 }
 html.a11y-high-contrast button,
 html.a11y-high-contrast [role="button"] {
   border: 2px solid #fff !important;
+  color: #fff !important;
+  background-color: #000 !important;
+}
+html.a11y-high-contrast input,
+html.a11y-high-contrast select,
+html.a11y-high-contrast textarea {
+  background-color: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+html.a11y-high-contrast input::placeholder {
+  color: #aaa !important;
+}
+/* Ícones PrimeIcons — manter brancos */
+html.a11y-high-contrast [class*="pi-"]::before {
+  color: #fff !important;
+}
+/* Botão ativo na barra de acessibilidade */
+html.a11y-high-contrast .ring-1 {
+  box-shadow: 0 0 0 2px #ffff00 !important;
+}
+/* Seções e cards — fundo preto com borda branca */
+html.a11y-high-contrast section,
+html.a11y-high-contrast header,
+html.a11y-high-contrast footer,
+html.a11y-high-contrast nav {
+  background-color: #000 !important;
+  border-color: #555 !important;
+}
+html.a11y-high-contrast h1,
+html.a11y-high-contrast h2,
+html.a11y-high-contrast h3,
+html.a11y-high-contrast h4 {
+  color: #fff !important;
+}
+html.a11y-high-contrast p,
+html.a11y-high-contrast span,
+html.a11y-high-contrast li {
+  color: #ddd !important;
+}
+/* Gradientes viram preto */
+html.a11y-high-contrast [style*="gradient"] {
+  background: #000 !important;
 }
 
 /* Inverter cores — útil para daltonismo e luz reduzida */
@@ -82,6 +128,18 @@ html.a11y-invert svg[role="img"] {
   outline: 3px solid #1a56db;
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+/* ─── Reset PrimeVue em inputs nativos de busca ─────────────── */
+/* PrimeVue Aura injeta border/shadow/outline em inputs nativos.
+   Resetamos apenas onde usamos inputs plain (sem componente PV). */
+#hero-search,
+#search-results-input {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding-block: 0 !important;
+  background: transparent !important;
 }
 
 /* ─── Skip link ────────────────────────────────────────────── */
