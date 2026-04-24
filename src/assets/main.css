@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@import "primeicons/primeicons.css";
+
+@theme {
+  --color-primary: #1a56db;
+  --color-primary-dark: #1e429f;
+  --color-primary-light: #e8f0fe;
+  --color-accent: #e74c3c;
+  --color-gov-blue: #1e3a6e;
+  --color-gov-red: #c0392b;
+  --font-family-sans: 'Rawline', 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  color: #1f2937;
+  background-color: #f9fafb;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
