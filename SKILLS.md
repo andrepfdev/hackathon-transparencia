@@ -1,6 +1,6 @@
 # SKILLS — Portal da Transparência MA (Hackathon)
 
-> Guia de desenvolvimento contínuo para a equipe e para o Claude Code.
+> Guia de desenvolvimento contínuo para Claude Code e OpenCode (Qwen).
 > Atualizado em: 24/04/2026
 
 ---
@@ -26,150 +26,200 @@
 ```
 src/
 ├── assets/
-│   └── main.css          ← Tailwind @import + variáveis de tema
+│   └── main.css               ← Tailwind + filtros a11y (grayscale, contrast, invert)
 ├── components/
-│   ├── AppHeader.vue     ← Barra de acessibilidade + logo + nav principal
-│   ├── HeroSearch.vue    ← Campo de busca inteligente + tags populares
-│   ├── QuickAccessCards.vue ← 8 cards de acesso rápido (1 clique → dado)
-│   ├── TransparencyNumbers.vue ← Gráficos de despesas, áreas, servidores
-│   ├── MostAccessedServices.vue ← Grid de 6 serviços mais acessados
-│   └── AppFooter.vue     ← Rede de Transparência + links + info SETRANSP
+│   ├── AccessibilityBar.vue   ← Componente independente e funcional (A±, filtros, VLibras)
+│   ├── AppHeader.vue          ← Usa AccessibilityBar, skip link, menu mobile
+│   ├── HeroSearch.vue         ← Busca inteligente + tags populares
+│   ├── QuickAccessCards.vue   ← 8 cards de 1 clique (4 col mobile / 8 col desktop)
+│   ├── TransparencyNumbers.vue← Donut + barras de área + card servidores
+│   ├── MostAccessedServices.vue← 6 cards com ícone + texto + seta
+│   └── AppFooter.vue          ← Rede Transparência + links + SETRANSP
 ├── views/
-│   └── HomeView.vue      ← Composição da página inicial
+│   └── HomeView.vue           ← Composição: Header + Main (tabindex=-1) + Footer
 ├── router/
-│   └── index.ts          ← Rotas da aplicação
-├── stores/               ← Stores Pinia (dados, filtros, busca)
-├── App.vue               ← Root: <RouterView />
-└── main.ts               ← Bootstrap: PrimeVue + Pinia + Router
+│   └── index.ts               ← Rota home com lazy load
+├── stores/
+│   ├── accessibility.ts       ← fontSize, filter, vlibrasActive — persiste localStorage
+│   └── counter.ts             ← placeholder (remover)
+├── services/
+│   ├── portalApi.ts           ← USE_REAL_API flag + mock imports + trim() em fornecedores
+│   └── types/
+│       ├── despesas.ts        ← DespesaItem, DespesasResponse
+│       ├── servidores.ts      ← ServidorItem, ServidoresResponse
+│       ├── contratos.ts       ← ContratoItem, ContratosResponse
+│       ├── receitas.ts        ← ReceitaItem, ReceitasResponse
+│       └── fornecedor.ts      ← Fornecedor (formato real da API)
+├── data/mock/
+│   ├── despesas.json          ← por_funcao[] + data[] com nome_cidadao
+│   ├── servidores.json        ← por_vinculo[] + data[] com nome_cidadao
+│   ├── contratos.json         ← por_situacao[] + data[] com modalidade_cidadao
+│   ├── receitas.json          ← por_natureza[] com nome_cidadao
+│   └── fornecedores.json      ← [{id_value, label, doc}] — formato real da API
+├── App.vue                    ← Skip link + init() da store de a11y + RouterView
+└── main.ts                    ← PrimeVue (tema Aura) + Pinia + Router
+
+index.html                     ← lang="pt-BR" + VLibras script + meta SEO
+.opencode/                     ← Config OpenCode/Qwen (ver seção abaixo)
+SKILLS.md                      ← este arquivo
+TASKS.md                       ← próximas tarefas e backlog
 ```
 
 ---
 
 ## 🎨 Design System
 
-### Paleta de Cores (Tailwind custom)
+### Paleta de Cores
 ```css
---color-gov-blue: #1a3a6e    /* Azul principal do governo MA */
+--color-gov-blue: #1a3a6e    /* Azul principal governo MA */
 --color-gov-red:  #c0392b    /* Vermelho MA.GOV.BR */
 --color-primary:  #1a56db    /* Azul interativo (links, botões) */
 ```
 
 ### Princípios Visuais
-- **Cards** com `rounded-xl`, `shadow-sm`, `border border-gray-100`
-- **Hover** sempre com `transition-colors` ou `transition-all`
-- **Ícones** via PrimeIcons (`pi pi-*`) — nunca imagens para ícones funcionais
-- **Tipografia**: Rawline (gov.br) → fallback Inter → system-ui
+- **Cards**: `rounded-xl shadow-sm border border-gray-100 bg-white`
+- **Hover**: sempre `transition-colors` ou `transition-all`
+- **Ícones**: PrimeIcons `pi pi-*` — nunca SVGs inline para ícones funcionais
+- **Tipografia**: Rawline (gov.br) → Inter → system-ui
 
-### Acessibilidade (obrigatório por LAI e WCAG 2.1)
-- Todo elemento interativo tem `aria-label` descritivo
-- Ícones decorativos levam `aria-hidden="true"`
-- Skip link `#main-content` implementado (via tabindex no `<main>`)
-- Contraste mínimo AA em todos os textos
-- Formulários com `<label>` vinculado via `for`/`id`
+### Mobile-First (obrigatório)
+- Base CSS = 320px. `sm:` `md:` `lg:` só expandem.
+- Alvos de toque: `min-h-[44px]` em todo elemento interativo.
+- Containers: `px-4 sm:px-6`. Grids: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`.
+- Ver skill `.opencode/skills/mobile-first/SKILL.md`.
 
 ---
 
-## 📖 Glossário (Thesaurus Hackathon)
+## ♿ Acessibilidade Implementada
 
-O arquivo `.claude/desafio-hackathon/Thesaurus para o Hackathon da Transparência.xlsx`
-contém os **termos técnicos do portal oficial** e suas equivalências em **linguagem cidadã**.
+| Recurso | Implementação |
+|---|---|
+| Tamanho de fonte A±  | `html.style.fontSize` 14–22px (5 níveis) |
+| Escala de cinza | `html.classList.add('a11y-grayscale')` |
+| Alto contraste | `html.classList.add('a11y-high-contrast')` |
+| Inverter cores | `html.classList.add('a11y-invert')` + imagens re-invertidas |
+| VLibras | Widget `[vw]` controlado por `display` |
+| Persistência | `localStorage` chave `portal-a11y` |
+| Skip link | `<a href="#main-content">` em App.vue |
+| aria-label | Todo interativo sem texto visível |
+| aria-hidden | Todo ícone decorativo |
+| aria-pressed | Botões de toggle na AccessibilityBar |
+| aria-live | Live regions para atualizações dinâmicas |
 
-**Regra de ouro:** toda interface voltada ao usuário final usa a linguagem cidadã.
-A linguagem técnica fica restrita a filtros avançados e documentação interna.
+---
 
-### Exemplos de substituição obrigatória
+## 📖 Glossário / Thesaurus
 
-| Termo técnico (portal atual) | Linguagem cidadã (nosso protótipo) |
+Arquivo: `.claude/desafio-hackathon/Thesaurus para o Hackathon da Transparência.xlsx`
+
+**Regra de ouro:** se o cidadão precisar de formação em contabilidade para entender um rótulo, o rótulo está errado.
+
+| Técnico | Cidadão |
 |---|---|
 | Natureza da Receita | De onde vem o dinheiro |
-| Unidade Gestora (UG) | Secretaria / Órgão responsável |
+| Unidade Gestora (UG) | Secretaria ou órgão responsável |
 | Empenho | Compromisso de pagamento |
 | Liquidação | Confirmação de entrega do serviço |
-| Extraorçamentário | Pagamentos fora do orçamento anual |
+| Extraorçamentário | Pagamento fora do orçamento anual |
 | Subfunção | Área de atuação |
 | CNPJ do fornecedor | Empresa contratada |
 | Modalidade licitatória | Como a compra foi feita |
+| Estatutário | Concursado (efetivo) |
+| Comissionado | Cargo de confiança |
 
-> Consulte sempre o Thesaurus antes de nomear labels, placeholders, tooltips e títulos de seção.
+Ver skill `.opencode/skills/thesaurus/SKILL.md` para lista completa.
 
 ---
 
-## 🔌 API do Portal (Endpoints Funcionais)
+## 🔌 API do Portal
 
-Base URL: `https://transparencia.ma.gov.br`
+**O portal é PHP server-side rendered — não possui REST API.**
+Dados chegam no HTML; não há endpoints JSON gerais funcionando.
 
-| Endpoint | Status | Uso |
+| Endpoint | Status | Formato real |
 |---|---|---|
-| `/app/v2/despesas/fornecedoresContratantes?search={termo}` | ✅ 200 | Autocomplete de fornecedores |
-| `/app/v2/despesas?ano={ano}` | ⚠️ testar | Listagem de despesas |
-| `/app/v2/despesas/exportar?tipo=csv&ano={ano}` | ❌ 500 | **QUEBRADO** — não usar |
-| `/app/v2/receitas/unidades?search=` | ❌ 404 | **INATIVO** |
-| `/app/v2/remuneracao/exportar` | ❌ 404 | **INATIVO** |
-| `dados.ma.gov.br/api/action/datastore_search` | ⚠️ instável | CKAN — retorna JSON inválido às vezes |
+| `/app/v2/despesas/fornecedoresContratantes?search=` | ✅ 200 | `[{id_value, label, doc}]` |
+| `/app/v2/despesas?ano=` | ❌ 500/HTML | — |
+| `/app/v2/receitas?ano=` | ❌ 500 | — |
+| `/app/v2/big_numbers` | ❌ 500 | — |
+| Todos os demais | ❌ 404/HTML | — |
 
-### Gotchas críticos da API
-1. **Trim obrigatório**: nomes de fornecedores retornam com padding `CHAR(n)` — sempre `label.trim()`
-2. **CORS aberto**: sem headers de restrição — não depender de segurança via CORS
-3. **Lentidão**: autocomplete leva ~3,6s — implementar debounce de 300ms + skeleton
+**Gotchas:**
+1. `label` de fornecedores vem com padding `CHAR(n)` → sempre `.trim()`
+2. CORS aberto — não usar como argumento de segurança
+3. Endpoint real leva ~3,6s → debounce 300ms no autocomplete
+
+**Estratégia adotada:** `USE_REAL_API = false` em `portalApi.ts`.
+Mocks em `src/data/mock/*.json` com estrutura idêntica ao que a API retornaria.
+
+---
+
+## 🤖 OpenCode / Qwen
+
+Configuração em `.opencode/`:
+
+| Arquivo | Função |
+|---|---|
+| `QWEN.md` | Contexto principal do projeto para o modelo |
+| `settings.json` | Modelo padrão (`qwen3.6-plus`) + permissões de Bash |
+| `skills/vue3-tailwind/` | Padrões Vue 3 + Tailwind v4 + PrimeVue |
+| `skills/a11y-wcag/` | Acessibilidade WCAG 2.1 + eMAG 3.1 |
+| `skills/mock-data/` | Serviços, tipos e mocks da API |
+| `skills/thesaurus/` | Linguagem cidadã — substituições de jargão |
+| `skills/mobile-first/` | Auditoria e padrões de responsividade |
+
+**Modelos disponíveis (opencode-go):**
+- `opencode-go/qwen3.6-plus` — padrão, tarefas complexas
+- `opencode-go/qwen3.5-plus` — tarefas rápidas / revisões
 
 ---
 
 ## 🚦 Regras de Desenvolvimento
 
 ### Arquitetura ≤ 3 cliques (LAI)
-Todo dado primário deve ser acessível a partir da home em **no máximo 3 cliques**:
 1. Home → Card de categoria → Resultado com dado imediato
 2. Resultado → Filtro opcional → Dado refinado
 
-**Nunca** criar formulários com mais de 2 campos obrigatórios para acessar dados primários.
+Nunca criar formulários com mais de 2 campos obrigatórios para acessar dados primários.
 
 ### Componentes
-- Prefira componentes pequenos e focados (Single Responsibility)
+- Single Responsibility — componentes pequenos e focados
 - Props tipadas com `interface` TypeScript — sem `any`
-- Dados mockados ficam no próprio componente enquanto a API real não está integrada
-- Separe dados/lógica em `stores/` quando compartilhados entre 2+ componentes
+- Dados locais no componente → compartilhados entre 2+ → store Pinia
+- Sem comentários óbvios; apenas WHY não-óbvios
 
 ### Commits
-Convenção: `feat:`, `fix:`, `refactor:`, `a11y:`, `perf:`, `docs:`
+`feat:` `fix:` `refactor:` `a11y:` `perf:` `docs:`
 
 ---
 
-## 🎯 Roadmap de Desenvolvimento
+## 🎯 Roadmap
 
-### Fase 1 — MVP Home (atual)
-- [x] Setup Tailwind v4 + PrimeVue 4
-- [x] AppHeader com acessibilidade
-- [x] HeroSearch com busca + tags populares
-- [x] QuickAccessCards (8 categorias, 1 clique)
-- [x] TransparencyNumbers (gráficos mock)
-- [x] MostAccessedServices
+### Fase 1 — MVP Home ✅
+- [x] Tailwind v4 + PrimeVue 4 configurados
+- [x] AccessibilityBar funcional (A±, filtros, VLibras, persistência)
+- [x] AppHeader mobile-first com menu hamburguer
+- [x] HeroSearch com busca + tags
+- [x] QuickAccessCards (8 cards, 1 clique)
+- [x] TransparencyNumbers (donut + barras + servidores)
+- [x] MostAccessedServices (6 cards)
 - [x] AppFooter completo
+- [x] Skip link + WCAG base
+- [x] VLibras integrado
+- [x] Mocks JSON com tipos TypeScript
+- [x] portalApi.ts com USE_REAL_API flag
+- [x] OpenCode skills configuradas
 
-### Fase 2 — Integração de Dados
-- [ ] Store `usePortalApi` com chamadas reais à API MA
-- [ ] Debounce + skeleton no autocomplete de fornecedores
-- [ ] Gráfico de pizza real com dados do mês atual
-- [ ] Barras de investimento com dados reais por área
-
-### Fase 3 — Páginas de Detalhe
-- [ ] `/despesas` — Tabela com filtros simplificados (linguagem cidadã)
-- [ ] `/servidores` — Busca por nome/cargo com salário visível
-- [ ] `/contratos` — Lista de contratos ativos com valores
-- [ ] `/obras` — Mapa interativo por município
-
-### Fase 4 — Polimento
-- [ ] Dark mode (`.dark` class)
-- [ ] PWA / offline básico
-- [ ] Testes de acessibilidade automatizados (axe-core)
-- [ ] Performance: lazy load de rotas + imagens
+### Fase 2 — Páginas de Detalhe (próxima)
+Ver `TASKS.md` para detalhamento.
 
 ---
 
 ## 🔍 Referências
 
-- Protótipo visual: `.claude/desafio-hackathon/screencapture-uxpilot-ai-*.png`
+- Protótipo: `.claude/desafio-hackathon/screencapture-uxpilot-ai-*.png`
 - Dossiê de fragilidades: `.claude/desafio-hackathon/dossie_fragilidades_v2.md`
 - Thesaurus: `.claude/desafio-hackathon/Thesaurus para o Hackathon da Transparência.xlsx`
-- Portal oficial auditado: `transparencia.ma.gov.br`
-- LAI: Lei nº 12.527/2011 + Decreto Federal nº 7.724/2012
-- WCAG 2.1 AA (obrigatório por eMAG 3.1)
+- Portal auditado: `transparencia.ma.gov.br`
+- LAI: Lei nº 12.527/2011 + Decreto nº 7.724/2012
+- WCAG 2.1 AA / eMAG 3.1
