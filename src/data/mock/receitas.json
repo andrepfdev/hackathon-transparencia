@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "endpoint": "/app/v2/receitas",
+    "ano": 2025,
+    "atualizado_em": "2025-04-18",
+    "total_registros": 2180
+  },
+  "resumo": {
+    "total_previsto": 28500000000.00,
+    "total_arrecadado": 16800000000.00,
+    "percentual_execucao": 58.9,
+    "moeda": "BRL"
+  },
+  "por_natureza": [
+    {
+      "codigo": "1000",
+      "nome": "Receitas Correntes",
+      "nome_cidadao": "Dinheiro que entra todo ano",
+      "valor_previsto": 24000000000.00,
+      "valor_arrecadado": 14200000000.00,
+      "percentual": 84.5
+    },
+    {
+      "codigo": "1100",
+      "nome": "Receita Tributária",
+      "nome_cidadao": "Impostos e taxas",
+      "valor_previsto": 9800000000.00,
+      "valor_arrecadado": 5900000000.00,
+      "percentual": 35.1
+    },
+    {
+      "codigo": "1300",
+      "nome": "Receita Patrimonial",
+      "nome_cidadao": "Rendimentos do patrimônio público",
+      "valor_previsto": 350000000.00,
+      "valor_arrecadado": 210000000.00,
+      "percentual": 1.2
+    },
+    {
+      "codigo": "1700",
+      "nome": "Transferências Correntes",
+      "nome_cidadao": "Dinheiro recebido do governo federal",
+      "valor_previsto": 13500000000.00,
+      "valor_arrecadado": 8000000000.00,
+      "percentual": 47.6
+    },
+    {
+      "codigo": "2000",
+      "nome": "Receitas de Capital",
+      "nome_cidadao": "Dinheiro de empréstimos e vendas",
+      "valor_previsto": 4500000000.00,
+      "valor_arrecadado": 2600000000.00,
+      "percentual": 15.5
+    }
+  ],
+  "data": [
+    {
+      "id": 1,
+      "data": "2025-04-01",
+      "natureza": "Receita Tributária",
+      "natureza_cidadao": "Impostos e taxas",
+      "descricao": "ICMS — Imposto sobre Circulação de Mercadorias e Serviços",
+      "descricao_cidadao": "Imposto cobrado nas compras de produtos e serviços",
+      "orgao": "Secretaria da Fazenda",
+      "valor": 480000000.00
+    },
+    {
+      "id": 2,
+      "data": "2025-04-05",
+      "natureza": "Transferências Correntes",
+      "natureza_cidadao": "Dinheiro recebido do governo federal",
+      "descricao": "FPE — Fundo de Participação dos Estados",
+      "descricao_cidadao": "Repasse mensal do governo federal ao Maranhão",
+      "orgao": "Secretaria da Fazenda",
+      "valor": 920000000.00
+    },
+    {
+      "id": 3,
+      "data": "2025-04-10",
+      "natureza": "Receita Tributária",
+      "natureza_cidadao": "Impostos e taxas",
+      "descricao": "IPVA — Imposto sobre a Propriedade de Veículos Automotores",
+      "descricao_cidadao": "Imposto anual cobrado dos donos de veículos",
+      "orgao": "Secretaria da Fazenda",
+      "valor": 85000000.00
+    }
+  ]
+}

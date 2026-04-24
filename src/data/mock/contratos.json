@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "endpoint": "/app/v2/contratos",
+    "ano": 2025,
+    "atualizado_em": "2025-04-18",
+    "total_registros": 3240,
+    "pagina_atual": 1,
+    "total_paginas": 33
+  },
+  "resumo": {
+    "total_contratos": 3240,
+    "valor_total": 4800000000.00,
+    "por_situacao": [
+      { "situacao": "Vigente", "quantidade": 2108, "valor": 3120000000.00 },
+      { "situacao": "Encerrado", "quantidade": 980, "valor": 1540000000.00 },
+      { "situacao": "Suspenso", "quantidade": 152, "valor": 140000000.00 }
+    ]
+  },
+  "data": [
+    {
+      "id": 1,
+      "numero": "001/2025",
+      "objeto": "Fornecimento de medicamentos e materiais hospitalares para a rede pública estadual",
+      "objeto_resumido": "Medicamentos hospitalares",
+      "fornecedor_nome": "CIRURGICA FERNANDES COMERCIO DE MATERIAIS LTDA",
+      "fornecedor_doc": "60921336000105",
+      "orgao": "Secretaria de Saúde do Estado",
+      "modalidade": "Pregão Eletrônico",
+      "modalidade_cidadao": "Compra eletrônica com disputa de preços",
+      "data_inicio": "2025-01-15",
+      "data_fim": "2026-01-14",
+      "valor": 18500000.00,
+      "situacao": "Vigente"
+    },
+    {
+      "id": 2,
+      "numero": "002/2025",
+      "objeto": "Serviços de merenda escolar para escolas da rede estadual do Maranhão",
+      "objeto_resumido": "Merenda escolar",
+      "fornecedor_nome": "ALIMENTAÇÃO E SAUDE LTDA",
+      "fornecedor_doc": "11222333000144",
+      "orgao": "Secretaria de Educação do Estado",
+      "modalidade": "Pregão Eletrônico",
+      "modalidade_cidadao": "Compra eletrônica com disputa de preços",
+      "data_inicio": "2025-02-01",
+      "data_fim": "2025-12-31",
+      "valor": 42000000.00,
+      "situacao": "Vigente"
+    },
+    {
+      "id": 3,
+      "numero": "003/2025",
+      "objeto": "Construção de 12 unidades básicas de saúde nos municípios do interior do Maranhão",
+      "objeto_resumido": "Unidades de saúde",
+      "fornecedor_nome": "CONSTRUTORA CONEL LTDA",
+      "fornecedor_doc": "01857610000179",
+      "orgao": "Secretaria de Infraestrutura",
+      "modalidade": "Concorrência",
+      "modalidade_cidadao": "Licitação aberta para obras de grande porte",
+      "data_inicio": "2025-03-10",
+      "data_fim": "2026-09-09",
+      "valor": 85000000.00,
+      "situacao": "Vigente"
+    },
+    {
+      "id": 4,
+      "numero": "004/2025",
+      "objeto": "Aquisição de viaturas policiais para a Polícia Civil e Militar do Estado do Maranhão",
+      "objeto_resumido": "Viaturas policiais",
+      "fornecedor_nome": "VIATURAS BRASIL COMERCIO DE VEICULOS LTDA",
+      "fornecedor_doc": "12345678000100",
+      "orgao": "Secretaria de Segurança Pública",
+      "modalidade": "Pregão Eletrônico",
+      "modalidade_cidadao": "Compra eletrônica com disputa de preços",
+      "data_inicio": "2025-01-20",
+      "data_fim": "2025-12-19",
+      "valor": 12500000.00,
+      "situacao": "Vigente"
+    },
+    {
+      "id": 5,
+      "numero": "005/2025",
+      "objeto": "Locação de sistemas de tecnologia da informação para gestão administrativa estadual",
+      "objeto_resumido": "Sistema de TI",
+      "fornecedor_nome": "TECH SOLUTIONS BRASIL LTDA",
+      "fornecedor_doc": "55443322000111",
+      "orgao": "Secretaria de Gestão e Previdência",
+      "modalidade": "Dispensa",
+      "modalidade_cidadao": "Contratação direta (serviço especializado)",
+      "data_inicio": "2025-04-01",
+      "data_fim": "2026-03-31",
+      "valor": 3800000.00,
+      "situacao": "Vigente"
+    }
+  ]
+}

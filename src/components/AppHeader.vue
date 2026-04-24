@@ -48,11 +48,11 @@ const accessibilityLinks = [
     </div>
 
     <!-- Cabeçalho principal -->
-    <div class="container flex items-center justify-between py-3">
+    <div class="container flex items-center justify-between py-4 my-6">
       <div class="flex items-center gap-3">
         <div class="w-1 h-10 bg-blue-600 rounded-full hidden sm:block" aria-hidden="true" />
         <div>
-          <a href="/" class="block">
+          <a href="/" class="block px-2 py-6" aria-label="Portal da Transparência - Governo do Estado do Maranhão">
             <span class="text-xl font-bold text-[#1a3a6e] leading-tight block">Portal da Transparência</span>
             <span class="text-xs text-gray-500">Governo do Estado do Maranhão</span>
           </a>
