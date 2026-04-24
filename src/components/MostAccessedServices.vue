@@ -70,13 +70,13 @@ const services: Service[] = [
           v-for="service in services"
           :key="service.title"
           :href="service.href"
-          class="group flex items-start gap-4 bg-white border border-gray-300 rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-lg hover:border-blue-400 active:bg-blue-50 transition-all min-h-[80px] border-l-4"
-          :class="service.featured ? 'border-blue-300 border-l-blue-500 bg-blue-50 sm:col-span-2 lg:col-span-1' : 'border-l-gray-300 hover:border-l-blue-500'"
+          class="group flex items-start gap-4 bg-white border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-blue-200 active:bg-blue-50 transition-all min-h-[80px]"
+          :class="service.featured ? 'bg-blue-50 border-blue-200 sm:col-span-2 lg:col-span-1' : ''"
         >
           <!-- Ícone -->
           <div
             class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-            :class="service.featured ? 'bg-blue-100' : 'bg-gray-50 group-hover:bg-blue-50'"
+            :class="service.featured ? 'bg-blue-100' : 'bg-gray-50 group-hover:bg-blue-50 transition-colors'"
           >
             <i :class="service.icon" class="text-blue-600 text-lg" aria-hidden="true" />
           </div>
