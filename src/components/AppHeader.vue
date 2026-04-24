@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import AccessibilityBar from '@/components/AccessibilityBar.vue'
 
 const mobileMenuOpen = ref(false)
 
@@ -18,49 +19,22 @@ const socialLinks = [
   { icon: 'pi pi-linkedin', href: '#', label: 'LinkedIn' },
   { icon: 'pi pi-youtube', href: '#', label: 'YouTube' },
 ]
-
-const accessibilityLinks = [
-  { label: 'Aumentar Fonte', icon: 'pi pi-search-plus' },
-  { label: 'Diminuir Fonte', icon: 'pi pi-search-minus' },
-  { label: 'Preto e Branco', icon: 'pi pi-eye' },
-  { label: 'Inverter Cores', icon: 'pi pi-palette' },
-  { label: 'Declarar Libras', icon: 'pi pi-volume-up' },
-]
 </script>
 
 <template>
   <header class="bg-white shadow-sm border-b border-gray-100">
-    <!-- Barra de acessibilidade -->
-    <div class="bg-[#1a3a6e] text-white text-xs">
-      <div class="container flex items-center justify-between py-1">
-        <nav class="flex gap-4" aria-label="Acessibilidade">
-          <button
-            v-for="link in accessibilityLinks"
-            :key="link.label"
-            class="flex items-center gap-1 hover:text-blue-200 transition-colors"
-            :aria-label="link.label"
-          >
-            <i :class="link.icon" class="text-xs" />
-            <span class="hidden sm:inline">{{ link.label }}</span>
-          </button>
-        </nav>
-      </div>
-    </div>
+    <AccessibilityBar />
 
-    <!-- Cabeçalho principal -->
-    <div class="container flex items-center justify-between py-4 my-6">
-      <div class="flex items-center gap-3">
+    <div class="container flex items-center justify-between py-3">
+      <div class="flex items-center gap-2 sm:gap-3">
         <div class="w-1 h-10 bg-blue-600 rounded-full hidden sm:block" aria-hidden="true" />
-        <div>
-          <a href="/" class="block px-2 py-6" aria-label="Portal da Transparência - Governo do Estado do Maranhão">
-            <span class="text-xl font-bold text-[#1a3a6e] leading-tight block">Portal da Transparência</span>
-            <span class="text-xs text-gray-500">Governo do Estado do Maranhão</span>
-          </a>
-        </div>
+        <a href="/" aria-label="Portal da Transparência - Governo do Estado do Maranhão">
+          <span class="text-base sm:text-xl font-bold text-[#1a3a6e] leading-tight block">Portal da Transparência</span>
+          <span class="text-xs text-gray-500">Governo do Estado do Maranhão</span>
+        </a>
       </div>
 
-      <div class="flex items-center gap-4">
-        <!-- Redes sociais -->
+      <div class="flex items-center gap-3">
         <nav class="hidden md:flex items-center gap-2" aria-label="Redes sociais">
           <a
             v-for="social in socialLinks"
@@ -72,52 +46,76 @@ const accessibilityLinks = [
             <i :class="social.icon" class="text-lg" />
           </a>
         </nav>
-
-        <!-- Logo MA.GOV.BR -->
-        <a href="https://www.ma.gov.br" target="_blank" rel="noopener noreferrer" class="text-right">
-          <span class="text-sm font-bold text-[#c0392b] leading-none block">MA.GOV.BR</span>
+        <a
+          href="https://www.ma.gov.br"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Portal do Governo do Maranhão (abre em nova aba)"
+          class="text-sm font-bold text-[#c0392b] leading-none"
+        >
+          MA.GOV.BR
         </a>
       </div>
     </div>
 
-    <!-- Menu de navegação -->
     <nav class="bg-[#f0f4ff] border-t border-blue-100" aria-label="Menu principal">
       <div class="container">
-        <ul class="hidden md:flex items-center gap-1 py-0">
+        <ul class="hidden md:flex items-center gap-0.5 py-0.5">
           <li>
-            <a href="/" class="flex items-center px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm font-medium" aria-label="Início">
-              <i class="pi pi-home text-sm" />
+            <a href="/" class="flex items-center px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm transition-colors" aria-label="Início">
+              <i class="pi pi-home text-sm" aria-hidden="true" />
             </a>
           </li>
           <li v-for="link in navLinks" :key="link.label">
             <a
               :href="link.href"
-              class="flex items-center gap-1 px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm font-medium transition-colors uppercase text-xs tracking-wide"
+              class="flex items-center gap-1 px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-xs font-semibold uppercase tracking-wide transition-colors"
             >
-              <i v-if="link.icon" :class="link.icon" class="text-xs" />
+              <i v-if="link.icon" :class="link.icon" class="text-xs" aria-hidden="true" />
               {{ link.label }}
             </a>
           </li>
         </ul>
 
-        <!-- Mobile menu toggle -->
-        <div class="md:hidden flex items-center py-2">
+        <div class="md:hidden flex items-center justify-between py-1.5">
+          <a href="/" class="flex items-center gap-1 text-[#1a3a6e] text-sm font-medium">
+            <i class="pi pi-home text-sm" aria-hidden="true" />
+            <span>Início</span>
+          </a>
           <button
-            class="flex items-center gap-2 text-[#1a3a6e] font-medium text-sm"
+            class="flex items-center gap-1.5 text-[#1a3a6e] font-semibold text-sm px-2 py-1.5 rounded hover:bg-blue-50 transition-colors min-h-[44px]"
             :aria-expanded="mobileMenuOpen"
             aria-controls="mobile-menu"
             @click="mobileMenuOpen = !mobileMenuOpen"
           >
-            <i :class="mobileMenuOpen ? 'pi pi-times' : 'pi pi-bars'" />
-            Menu
+            <i :class="mobileMenuOpen ? 'pi pi-times' : 'pi pi-bars'" aria-hidden="true" />
+            <span>{{ mobileMenuOpen ? 'Fechar' : 'Menu' }}</span>
           </button>
         </div>
 
-        <ul v-if="mobileMenuOpen" id="mobile-menu" class="md:hidden flex flex-col py-2 gap-1">
+        <ul v-if="mobileMenuOpen" id="mobile-menu" class="md:hidden flex flex-col border-t border-blue-100 py-2 gap-0.5">
           <li v-for="link in navLinks" :key="link.label">
-            <a :href="link.href" class="block px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm">
+            <a
+              :href="link.href"
+              class="flex items-center gap-2 px-3 py-3 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm font-medium transition-colors min-h-[44px]"
+              @click="mobileMenuOpen = false"
+            >
+              <i v-if="link.icon" :class="link.icon" class="text-sm" aria-hidden="true" />
               {{ link.label }}
             </a>
+          </li>
+          <li class="px-3 pt-3 pb-1 border-t border-blue-100 mt-1">
+            <nav class="flex gap-4" aria-label="Redes sociais">
+              <a
+                v-for="social in socialLinks"
+                :key="social.label"
+                :href="social.href"
+                :aria-label="social.label"
+                class="text-[#c0392b] hover:text-[#922b21] transition-colors p-1"
+              >
+                <i :class="social.icon" class="text-xl" />
+              </a>
+            </nav>
           </li>
         </ul>
       </div>

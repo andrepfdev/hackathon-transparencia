@@ -1,13 +1,35 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
+    <meta name="description" content="Portal da Transparência do Governo do Estado do Maranhão — acesso fácil a despesas, receitas, servidores, contratos e obras públicas.">
+    <meta name="theme-color" content="#1a3a6e">
+    <link rel="icon" href="/favicon.ico">
+    <title>Portal da Transparência — Governo do Maranhão</title>
+
+    <!-- VLibras — Tradutor de Libras do Governo Federal -->
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   </head>
   <body>
+    <!-- Widget VLibras (visibilidade controlada pela store de acessibilidade) -->
+    <div vw class="enabled" style="display:none">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+
+    <script>
+      // Inicializa o VLibras após o carregamento
+      window.addEventListener('load', function () {
+        if (window.VLibras) {
+          new window.VLibras.Widget('https://vlibras.gov.br/app')
+        }
+      })
+    </script>
   </body>
 </html>

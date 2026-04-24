@@ -11,18 +11,93 @@
   --font-family-sans: 'Rawline', 'Inter', system-ui, sans-serif;
 }
 
-* {
+/* ─── Reset básico ─────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
+}
+
+/* Fonte base definida via JS pela store de acessibilidade.
+   O padrão é 16px mas o html.style.fontSize pode sobrescrever. */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: var(--font-family-sans);
   color: #1f2937;
   background-color: #f9fafb;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* ─── Container responsivo ─────────────────────────────────── */
 .container {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container { padding-inline: 1.5rem; }
+}
+
+/* ─── Filtros de acessibilidade ────────────────────────────── */
+
+/* Escala de cinza — tudo preto e branco */
+html.a11y-grayscale {
+  filter: grayscale(100%);
+}
+
+/* Alto contraste — fundo escuro, texto claro, bordas evidentes */
+html.a11y-high-contrast {
+  filter: contrast(175%) brightness(1.1) saturate(0);
+}
+html.a11y-high-contrast body {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast a {
+  color: #ffff00 !important;
+  text-decoration: underline !important;
+}
+html.a11y-high-contrast button,
+html.a11y-high-contrast [role="button"] {
+  border: 2px solid #fff !important;
+}
+
+/* Inverter cores — útil para daltonismo e luz reduzida */
+html.a11y-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+/* Imagens não devem ser invertidas junto com a UI */
+html.a11y-invert img,
+html.a11y-invert video,
+html.a11y-invert svg[role="img"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* ─── Foco visível — WCAG 2.4.7 ───────────────────────────── */
+:focus-visible {
+  outline: 3px solid #1a56db;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ─── Skip link ────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: #1a3a6e;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 4px 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  z-index: 9999;
+  transition: top 0.1s;
+}
+.skip-link:focus {
+  top: 0;
 }

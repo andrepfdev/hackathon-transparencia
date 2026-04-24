@@ -12,7 +12,7 @@ const footerLinks = {
   ],
   comunicacao: [
     { label: 'Canais de Manifestação', href: '#' },
-    { label: 'Contato dos Órgãos e Entidades da Administração', href: '#' },
+    { label: 'Contato dos Órgãos', href: '#' },
     { label: 'Pedidos de Acesso à Informação', href: '#' },
   ],
 }
@@ -34,47 +34,52 @@ const quickLinks = [
 
 <template>
   <footer>
-    <!-- Rede de Transparência -->
+    <!-- Rede de Transparência + links rápidos -->
     <div class="bg-gray-100 py-8 px-4">
       <div class="container flex flex-col items-center gap-6">
-        <div class="bg-white border border-gray-200 rounded-xl px-8 py-4 flex items-center gap-3 shadow-sm">
+        <!-- Selo -->
+        <div class="bg-white border border-gray-200 rounded-xl px-6 py-3 flex items-center gap-3 shadow-sm">
           <i class="pi pi-link text-blue-600 text-2xl" aria-hidden="true" />
           <div>
-            <p class="text-xs text-gray-400 uppercase tracking-widest font-medium">REDE DE</p>
-            <p class="font-bold text-[#1a3a6e] text-lg leading-tight">TRANSPARÊNCIA</p>
-            <p class="text-xs text-gray-400">GOVERNO DO ESTADO DO MARANHÃO</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-medium leading-none">REDE DE</p>
+            <p class="font-bold text-[#1a3a6e] text-base sm:text-lg leading-tight">TRANSPARÊNCIA</p>
+            <p class="text-[10px] text-gray-400 leading-none">GOVERNO DO ESTADO DO MARANHÃO</p>
           </div>
         </div>
 
-        <!-- Links rápidos -->
-        <div class="flex flex-wrap justify-center gap-8">
+        <!-- Links rápidos: 1 por linha no mobile, lado a lado no sm+ -->
+        <div class="flex flex-col sm:flex-row items-center sm:justify-center gap-4 sm:gap-8 w-full sm:w-auto">
           <a
             v-for="link in quickLinks"
             :key="link.label"
             :href="link.href"
-            class="flex items-center gap-3 group hover:text-blue-700 transition-colors"
+            class="flex items-center gap-3 group hover:text-blue-700 transition-colors w-full sm:w-auto justify-start sm:justify-center"
           >
             <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center flex-shrink-0">
               <i :class="link.icon" class="text-white text-sm" aria-hidden="true" />
             </div>
             <div>
               <p class="font-bold text-gray-800 text-sm leading-tight group-hover:text-blue-700">{{ link.label }}</p>
-              <p v-if="link.sublabel" class="text-xs text-[#c0392b] font-semibold">{{ link.sublabel }}</p>
+              <p v-if="link.sublabel" class="text-xs text-[#c0392b] font-semibold leading-none">{{ link.sublabel }}</p>
             </div>
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Footer principal -->
-    <div class="bg-[#1a3a6e] text-white py-10 px-4">
+    <!-- Rodapé principal -->
+    <div class="bg-[#1a3a6e] text-white py-8 px-4 sm:py-10">
       <div class="container">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <!--
+          Mobile:  1 coluna (seções empilhadas)
+          md+:     3 colunas
+        -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-8">
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-4">Principal</h3>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-3">Principal</h3>
             <ul class="flex flex-col gap-2">
               <li v-for="link in footerLinks.principal" :key="link.label">
-                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors">
+                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block">
                   {{ link.label }}
                 </a>
               </li>
@@ -82,21 +87,21 @@ const quickLinks = [
           </div>
 
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-4">Sobre o Portal</h3>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-3">Sobre o Portal</h3>
             <ul class="flex flex-col gap-2">
               <li v-for="link in footerLinks.sobre" :key="link.label">
-                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors">
+                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block">
                   {{ link.label }}
                 </a>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-4">Canais de Comunicação</h3>
+          <div class="sm:col-span-2 md:col-span-1">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-3">Canais de Comunicação</h3>
             <ul class="flex flex-col gap-2">
               <li v-for="link in footerLinks.comunicacao" :key="link.label">
-                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors">
+                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block">
                   {{ link.label }}
                 </a>
               </li>
@@ -106,36 +111,31 @@ const quickLinks = [
 
         <div class="border-t border-blue-800 pt-6">
           <p class="font-bold text-sm mb-2">SECRETARIA DE ESTADO DE TRANSPARÊNCIA E CONTROLE</p>
-          <p class="text-xs text-blue-300 mb-1">
-            Edifício Clodomir Millet, 5º andar · Av. Jerônimo de Albuquerque, s/n · Calhau · CEP 65074-220 · São Luís/MA
-          </p>
-          <p class="text-xs text-blue-300 mb-4">
-            Horário de Atendimento ao Público: das 8h às 12h · de segunda a sexta-feira (exceto feriados).
-          </p>
-          <p class="text-xs text-blue-400 mb-2">
+          <address class="not-italic text-xs text-blue-300 mb-1 leading-relaxed">
+            Edifício Clodomir Millet, 5º andar · Av. Jerônimo de Albuquerque, s/n<br>
+            Calhau · CEP 65074-220 · São Luís/MA<br>
+            Atendimento: seg a sex, 8h–12h (exceto feriados)
+          </address>
+          <p class="text-xs text-blue-400 mt-3 mb-4 leading-relaxed">
             Este portal segue o <strong class="text-white">eMAG 3.1</strong> e <strong class="text-white">WCAG 2.1</strong>
-            e é compatível com leitores de tela como NVDA e JAWS, garantindo o acesso às informações por pessoas com deficiência visual.
-          </p>
-          <p class="text-xs text-blue-400 mb-4">
+            e é compatível com leitores de tela como NVDA e JAWS.<br>
             Todos os direitos reservados · Licença Creative Commons 4.0
           </p>
 
-          <div class="flex items-center justify-between flex-wrap gap-4">
-            <div class="flex items-center gap-2">
-              <div class="bg-[#c0392b] text-white text-xs font-bold px-2 py-1 rounded">
-                GOVERNO DO<br>MARANHÃO
-              </div>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="bg-[#c0392b] text-white text-xs font-bold px-3 py-1.5 rounded inline-block w-fit">
+              GOVERNO DO MARANHÃO
             </div>
 
-            <nav class="flex gap-3" aria-label="Redes sociais">
+            <nav class="flex gap-4" aria-label="Redes sociais">
               <a
                 v-for="social in socialLinks"
                 :key="social.label"
                 :href="social.href"
                 :aria-label="social.label"
-                class="text-blue-300 hover:text-white transition-colors"
+                class="text-blue-300 hover:text-white transition-colors p-1"
               >
-                <i :class="social.icon" class="text-lg" />
+                <i :class="social.icon" class="text-xl" />
               </a>
             </nav>
           </div>

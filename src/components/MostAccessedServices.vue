@@ -49,41 +49,53 @@ const services: Service[] = [
 </script>
 
 <template>
-  <section class="py-10 px-4 bg-gray-50" aria-labelledby="services-heading">
+  <section class="py-8 px-4 md:py-10 bg-gray-50" aria-labelledby="services-heading">
     <div class="container">
-      <div class="text-center mb-8">
-        <h2 id="services-heading" class="text-2xl font-bold text-[#1a3a6e] mb-2">
+      <div class="text-center mb-6 sm:mb-8">
+        <h2 id="services-heading" class="text-xl sm:text-2xl font-bold text-[#1a3a6e] mb-2">
           Serviços Mais Acessados
         </h2>
-        <p class="text-gray-500 text-sm">
+        <p class="text-gray-500 text-sm max-w-md mx-auto">
           Acesse de forma rápida e clara as informações mais procuradas pelos cidadãos maranhenses.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!--
+        Mobile:  1 coluna (cards empilhados, fáceis de tocar)
+        sm:      2 colunas
+        lg:      3 colunas
+      -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <a
           v-for="service in services"
           :key="service.title"
           :href="service.href"
-          class="group bg-white border border-gray-100 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all relative overflow-hidden"
-          :class="service.featured ? 'border-blue-100 bg-blue-50' : ''"
+          class="group flex items-start gap-4 bg-white border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-blue-200 active:bg-blue-50 transition-all min-h-[80px]"
+          :class="service.featured ? 'border-blue-100 bg-blue-50 sm:col-span-2 lg:col-span-1' : ''"
         >
-          <div class="flex items-start justify-between mb-4">
-            <div
-              class="w-10 h-10 rounded-lg flex items-center justify-center"
-              :class="service.featured ? 'bg-blue-100' : 'bg-gray-50 group-hover:bg-blue-50'"
-            >
-              <i :class="service.icon" class="text-blue-600 text-lg" aria-hidden="true" />
-            </div>
-            <i class="pi pi-arrow-right text-gray-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" aria-hidden="true" />
+          <!-- Ícone -->
+          <div
+            class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+            :class="service.featured ? 'bg-blue-100' : 'bg-gray-50 group-hover:bg-blue-50'"
+          >
+            <i :class="service.icon" class="text-blue-600 text-lg" aria-hidden="true" />
           </div>
 
-          <h3 class="font-semibold text-gray-800 mb-1 group-hover:text-blue-700 transition-colors">
-            {{ service.title }}
-          </h3>
-          <p class="text-xs text-gray-500 leading-relaxed">
-            {{ service.description }}
-          </p>
+          <!-- Texto -->
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors text-sm sm:text-base leading-snug">
+              {{ service.title }}
+            </h3>
+            <p class="text-xs text-gray-500 leading-relaxed mt-0.5">
+              {{ service.description }}
+            </p>
+          </div>
+
+          <!-- Seta -->
+          <i
+            class="pi pi-arrow-right text-gray-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all flex-shrink-0 self-center"
+            aria-hidden="true"
+          />
         </a>
       </div>
     </div>
