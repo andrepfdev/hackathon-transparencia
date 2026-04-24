@@ -25,31 +25,33 @@ function searchTerm(term: string) {
         Use termos simples. Ex: salário de servidores, obras na minha cidade, contratos de merenda.
       </p>
 
-      <form
-        class="flex items-stretch max-w-xl mx-auto mb-4 shadow-md rounded-xl border border-gray-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all bg-white overflow-hidden"
-        @submit.prevent="onSearch"
+      <!-- Wrapper externo: cuida da borda, ring e cantos arredondados -->
+      <div
+        class="flex items-stretch max-w-xl mx-auto mb-4 rounded-xl border border-gray-300 shadow-md bg-white overflow-hidden
+               focus-within:border-blue-500 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.2)] transition-all"
       >
         <label for="hero-search" class="sr-only">Buscar informações no Portal</label>
-        <div class="flex-1 flex items-center px-4">
+        <form class="flex flex-1 items-center px-4" @submit.prevent="onSearch">
           <i class="pi pi-search text-gray-400 mr-3 flex-shrink-0 text-sm" aria-hidden="true" />
           <input
             id="hero-search"
             v-model="searchQuery"
             type="text"
             placeholder="Digite o que deseja encontrar..."
-            class="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent py-3.5 border-none shadow-none ring-0"
+            class="flex-1 text-sm text-gray-700 placeholder-gray-400 bg-transparent py-3.5"
             autocomplete="off"
             enterkeyhint="search"
           />
-        </div>
+        </form>
         <button
-          type="submit"
-          class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-5 sm:px-7 py-3.5 text-sm transition-colors flex-shrink-0"
+          type="button"
+          class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-5 sm:px-7 py-3.5 text-sm transition-colors flex-shrink-0 flex items-center gap-1.5"
+          @click="onSearch"
         >
-          <i class="pi pi-search mr-1.5 text-xs" aria-hidden="true" />
+          <i class="pi pi-search text-xs" aria-hidden="true" />
           Buscar
         </button>
-      </form>
+      </div>
 
       <div class="flex items-center justify-center gap-2 flex-wrap">
         <span class="text-xs text-gray-400">Populares:</span>
