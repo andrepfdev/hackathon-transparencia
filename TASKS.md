@@ -99,6 +99,37 @@
 
 ---
 
+## 🧠 Fase 2.6 — Agente de Busca com Linguagem Natural (Gemini)
+
+### 2.6.1 · BuscaInteligenteView
+
+**Serviço:** `src/services/geminiAgent.ts` → `enviarMensagem(texto, historico)`
+**Thesaurus:** `src/data/thesaurus/termosAgente.ts`
+**Rota:** `/busca-inteligente`
+**Config:** `VITE_GEMINI_API_KEY` em `.env`
+
+**Tarefas:**
+- [x] Criar `src/data/thesaurus/termosAgente.ts` com termos, intenções e campos de filtro
+- [x] Criar `src/services/geminiAgent.ts` com integração Gemini 2.0 Flash via fetch nativo
+- [x] Criar `src/views/BuscaInteligenteView.vue` com interface de chat conversacional
+- [x] Adicionar rota `/busca-inteligente` em `src/router/index.ts` (lazy load)
+- [x] Criar `.env.example` com `VITE_GEMINI_API_KEY=`
+- [x] Atualizar `SKILLS.md` com seção de IA / Gemini
+- [ ] Adicionar link para `/busca-inteligente` no `HeroSearch.vue` ou `QuickAccessCards.vue`
+- [ ] Testar com chave real do Gemini e ajustar system prompt conforme respostas
+- [ ] Expandir `FUNCOES_ORCAMENTO` no thesaurus com valores reais dos mocks
+
+**Comportamento implementado:**
+- Chat conversacional com histórico (últimas 10 trocas)
+- Gemini identifica intenção + extrai filtros da pergunta
+- Consulta automática nos mocks locais (`filtrarDespesas`, `getServidores`, etc.)
+- Botão "Ver detalhes →" navega para a view correta
+- Sugestões rápidas na tela inicial
+- Sem chave configurada → mensagem de erro amigável (sem exceção)
+- `aria-live="polite"`, `role="log"`, alvos de toque `min-h-[44px]`
+
+---
+
 ## 🔍 Fase 2.5 — Busca e Autocomplete
 
 ### 2.5.1 · Busca Inteligente no HeroSearch
