@@ -192,6 +192,8 @@ function toQuery() {
   }
 }
 
+const pesquisado = ref(false)
+
 async function buscar() {
   loading.value = true
   try {
@@ -203,7 +205,9 @@ async function buscar() {
 
 function aplicarFiltros() {
   filtros.value.pagina = 1
+  pesquisado.value = true
   router.push({ query: toQuery() })
+  buscar()
 }
 
 function limparFiltros() {
@@ -225,16 +229,20 @@ function limparFiltros() {
   dataInicio.value = ''
   dataFim.value = ''
   visualizacao.value = 'Unidade Gestora - UG'
-  router.push({ query: toQuery() })
+  pesquisado.value = false
+  resultado.value = null
+  router.push({ query: {} })
 }
 
 function irPagina(p: number) {
   filtros.value.pagina = p
   router.push({ query: toQuery() })
+  buscar()
 }
 
-watch(() => route.query, () => { fromQuery(); buscar() })
-onMounted(() => { fromQuery(); buscar() })
+// Só sincroniza o formulário com a URL (back/forward do browser), sem buscar
+watch(() => route.query, () => { fromQuery() })
+onMounted(() => { fromQuery() })
 
 // --- Computed ---
 const totalPages = computed(() => resultado.value?.meta.total_paginas ?? 1)
@@ -576,7 +584,7 @@ function exportarPDF() {
         </form>
 
         <!-- Resultado da pesquisa -->
-        <section aria-label="Resultado da pesquisa" aria-live="polite">
+        <section v-if="pesquisado" aria-label="Resultado da pesquisa" aria-live="polite">
           <h2 class="text-lg font-bold text-gray-800 mb-3">Resultado da pesquisa</h2>
 
           <!-- Filtros utilizados -->
@@ -728,8 +736,9 @@ function exportarPDF() {
               <p class="text-sm">Nenhuma despesa encontrada com os filtros selecionados.</p>
             </div>
 
-            <!-- Tabela -->
-            <div v-else class="overflow-x-auto">
+            <!-- Tabela desktop (md+) e cards mobile, dentro do mesmo v-else -->
+            <div v-else>
+            <div class="hidden md:block overflow-x-auto">
               <table class="w-full text-sm" aria-label="Despesas do Estado do Maranhão">
                 <thead class="bg-gray-50 text-xs text-gray-500 border-b border-gray-200">
                   <tr>
@@ -778,6 +787,61 @@ function exportarPDF() {
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            <!-- Cards mobile (< md) -->
+            <div class="md:hidden space-y-3 p-3">
+              <div
+                v-for="item in dadosFiltradosBusca"
+                :key="item.id"
+                class="border border-gray-200 rounded-lg overflow-hidden"
+              >
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600">Nº Documento</div>
+                  <div class="px-3 py-2 text-xs font-mono text-red-700 font-semibold">{{ item.numero_empenho }}</div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600">Data</div>
+                  <div class="px-3 py-2 text-xs text-gray-700">{{ formatDate(item.data_empenho) }}</div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600">Unidade</div>
+                  <div class="px-3 py-2 text-xs text-gray-700 leading-snug">{{ item.unidade_gestora }}</div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600">Fornecedor</div>
+                  <div class="px-3 py-2 text-xs text-gray-700 leading-snug">
+                    {{ item.fornecedor_nome }}
+                    <span class="block text-gray-400 font-mono">{{ item.fornecedor_doc }}</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600">Função</div>
+                  <div class="px-3 py-2 text-xs text-gray-700">{{ item.funcao }}</div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-amber-700">Reservado</div>
+                  <div class="px-3 py-2 text-xs text-amber-700 font-semibold tabular-nums">{{ formatBRL(item.valor_empenhado) }}</div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-blue-700">Confirmado</div>
+                  <div class="px-3 py-2 text-xs text-blue-700 font-semibold tabular-nums">{{ formatBRL(item.valor_liquidado) }}</div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-green-700">Pago</div>
+                  <div class="px-3 py-2 text-xs text-green-700 font-semibold tabular-nums">{{ formatBRL(item.valor_pago) }}</div>
+                </div>
+                <div class="grid grid-cols-[2fr_3fr] divide-x divide-gray-100 border-t border-gray-100">
+                  <div class="bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600">Situação</div>
+                  <div class="px-3 py-2 text-xs flex items-center">
+                    <span
+                      class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold"
+                      :class="situacaoBadge(item.situacao)"
+                    >{{ item.situacao }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
             </div>
 
             <!-- Paginação -->
@@ -838,10 +902,10 @@ function exportarPDF() {
 }
 
 :deep(.p-toggleswitch-checked .p-toggleswitch-slider) {
-  background: #dc2626 !important;
+  background: #dc2626e5 !important;
 }
 
 :deep(.p-toggleswitch-checked:hover .p-toggleswitch-slider) {
-  background: #b91c1c !important;
+  background: #b91c1cde !important;
 }
 </style>
