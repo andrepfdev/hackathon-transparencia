@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import Checkbox from 'primevue/checkbox'
 import ToggleSwitch from 'primevue/toggleswitch'
 import { filtrarDespesas, type DespesaFiltros } from '@/services/portalApi'
 import type { DespesasResponse } from '@/services/types/despesas'
@@ -72,6 +73,17 @@ const filtros = ref<DespesaFiltros>({
   programa: 'all',
   categoria: 'all',
   pagina: 1,
+})
+
+// --- Modo de consulta ---
+const modoConsulta = ref<'simplificado' | 'avancado'>('simplificado')
+const modoSimplificado = computed({
+  get: () => modoConsulta.value === 'simplificado',
+  set: (v) => { if (v) modoConsulta.value = 'simplificado' },
+})
+const modoAvancado = computed({
+  get: () => modoConsulta.value === 'avancado',
+  set: (v) => { if (v) modoConsulta.value = 'avancado' },
 })
 
 // --- ToggleSwitches exclusivos: Período ---
@@ -361,7 +373,106 @@ function exportarPDF() {
 
         <!-- Formulário de filtros -->
         <form class="bg-white border border-gray-200 rounded-lg p-5" @submit.prevent="aplicarFiltros" novalidate>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-0">
+          <!-- Seletor de modo -->
+          <div class="flex items-center gap-5 mb-6">
+            <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+              <Checkbox v-model="modoSimplificado" :binary="true" aria-label="Consulta Simplificada" />
+              Consulta Simplificada
+            </label>
+            <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+              <Checkbox v-model="modoAvancado" :binary="true" aria-label="Consulta Avançada" />
+              Consulta Avançada
+            </label>
+          </div>
+
+          <!-- Consulta Simplificada -->
+          <div v-if="modoConsulta === 'simplificado'" class="flex flex-col gap-4 max-w-md">
+            <!-- Período -->
+            <div>
+              <label class="block text-xs text-gray-600 mb-2">Período</label>
+              <div class="flex flex-wrap gap-4 mb-3">
+                <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                  <ToggleSwitch v-model="periodoAno" aria-label="Ver por Ano" />
+                  Ano
+                </label>
+                <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                  <ToggleSwitch v-model="periodoPeriodo" aria-label="Ver por Período" />
+                  Período
+                </label>
+                <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                  <ToggleSwitch v-model="periodoDias" aria-label="Ver por Últimos dias" />
+                  Últimos dias
+                </label>
+              </div>
+              <div v-if="periodoTipo === 'ano'">
+                <label class="block text-xs text-gray-600 mb-1">Ano</label>
+                <select
+                  v-model="filtros.ano"
+                  class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm bg-white focus-visible:outline-2 focus-visible:outline-blue-600"
+                >
+                  <option v-for="a in anos" :key="a" :value="a">{{ a }}</option>
+                </select>
+              </div>
+              <div v-else-if="periodoTipo === 'dias'">
+                <label class="block text-xs text-gray-600 mb-1">Últimos dias</label>
+                <select
+                  v-model="ultimosDias"
+                  class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm bg-white focus-visible:outline-2 focus-visible:outline-blue-600"
+                >
+                  <option v-for="d in diasOpcoes" :key="d" :value="d">{{ d }}</option>
+                </select>
+              </div>
+              <div v-else-if="periodoTipo === 'periodo'" class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Data inicial</label>
+                  <input
+                    type="date"
+                    v-model="dataInicio"
+                    class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-blue-600"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Data final</label>
+                  <input
+                    type="date"
+                    v-model="dataFim"
+                    class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-blue-600"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- Unidade Gestora -->
+            <div>
+              <label class="block text-xs text-gray-600 mb-1">Unidade Gestora</label>
+              <select
+                v-model="filtros.ug"
+                class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm bg-white focus-visible:outline-2 focus-visible:outline-blue-600"
+              >
+                <option v-for="u in ugs" :key="u.codigo" :value="u.codigo">{{ u.nome }}</option>
+              </select>
+            </div>
+            <!-- Situação -->
+            <div>
+              <label class="block text-xs text-gray-600 mb-2">Situação</label>
+              <div class="flex flex-wrap gap-4">
+                <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                  <ToggleSwitch v-model="sitTodos" aria-label="Mostrar todos" />
+                  Todos
+                </label>
+                <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                  <ToggleSwitch v-model="sitPagos" aria-label="Mostrar apenas pagos" />
+                  Pagos
+                </label>
+                <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                  <ToggleSwitch v-model="sitNaoPagos" aria-label="Mostrar apenas não pagos" />
+                  Não Pagos
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consulta Avançada -->
+          <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-0">
 
             <!-- Coluna esquerda: seções 1–4 -->
             <div class="space-y-6">
@@ -907,5 +1018,30 @@ function exportarPDF() {
 
 :deep(.p-toggleswitch-checked:hover .p-toggleswitch-slider) {
   background: #b91c1cde !important;
+}
+
+:deep(.p-checkbox) {
+  --p-checkbox-checked-background: #dc2626;
+  --p-checkbox-checked-border-color: #dc2626;
+  --p-checkbox-checked-hover-background: #b91c1c;
+  --p-checkbox-checked-hover-border-color: #b91c1c;
+  --p-checkbox-hover-border-color: #dc2626;
+  --p-checkbox-focus-ring-color: #dc2626;
+  --p-checkbox-shadow: 0 0 0 2px #dc262640;
+}
+
+:deep(.p-checkbox .p-checkbox-box) {
+  border-color: #dc2626 !important;
+}
+
+:deep(.p-checkbox.p-checkbox-checked .p-checkbox-box) {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+
+:deep(.p-checkbox:not(.p-disabled) .p-checkbox-box:hover),
+:deep(.p-checkbox:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box) {
+  border-color: #b91c1c !important;
+  background: #b91c1c !important;
 }
 </style>
