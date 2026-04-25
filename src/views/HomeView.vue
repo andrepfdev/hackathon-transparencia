@@ -5,6 +5,7 @@ import QuickAccessCards from '@/components/QuickAccessCards.vue'
 import TransparencyNumbers from '@/components/TransparencyNumbers.vue'
 import MostAccessedServices from '@/components/MostAccessedServices.vue'
 import InstitutionalLogos from '@/components/InstitutionalLogos.vue'
+import CidadeTransparencia from '@/components/CidadeTransparencia.vue'
 import AppFooter from '@/components/AppFooter.vue'
 </script>
 
@@ -17,6 +18,7 @@ import AppFooter from '@/components/AppFooter.vue'
       <TransparencyNumbers />
       <MostAccessedServices />
       <InstitutionalLogos />
+      <CidadeTransparencia />
     </main>
     <AppFooter />
   </div>
