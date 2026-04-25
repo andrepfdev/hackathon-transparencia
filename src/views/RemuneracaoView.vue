@@ -128,8 +128,15 @@ const filtros = ref<ServidorFiltros>({
 const filtroNomeAtivo = ref(true)
 const filtroOrgaoAtivo = computed({
   get: () => !filtroNomeAtivo.value,
-  set: (v) => { filtroNomeAtivo.value = !v },
+  set: (v) => {
+    filtroNomeAtivo.value = !v
+    erroNome.value = false // Limpa erro ao alternar
+  },
 })
+
+// --- Validação: Nome obrigatório quando toggle "Nome do servidor" está ativo ---
+const erroNome = ref(false)
+const nomeObrigatorio = computed(() => filtroNomeAtivo.value && !(filtros.value.nome || '').trim())
 
 // --- Controles da tabela ---
 const buscaTabela = ref('')
@@ -202,6 +209,12 @@ async function buscar() {
 }
 
 function aplicarFiltros() {
+  // Validação: nome é obrigatório quando toggle "Nome do servidor" está ativo
+  if (filtroNomeAtivo.value && !(filtros.value.nome || '').trim()) {
+    erroNome.value = true
+    return
+  }
+  erroNome.value = false
   filtros.value.pagina = 1
   pesquisado.value = true
   router.push({ query: toQuery() })
@@ -377,13 +390,21 @@ function exportarPDF() {
 
               <!-- Campo Nome -->
               <div v-if="filtroNomeAtivo" class="max-w-md">
-                <label class="block text-xs text-gray-600 mb-1">Nome do servidor (sem acentuação)</label>
+                <label class="block text-xs text-gray-600 mb-1">
+                  Nome do servidor (sem acentuação)
+                  <span class="text-red-600">*</span>
+                </label>
                 <input
                   type="text"
                   v-model="filtros.nome"
                   placeholder="Digite o nome..."
-                  class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-blue-600"
+                  :class="[
+                    'w-full border rounded px-2 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-blue-600',
+                    erroNome ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  ]"
+                  @input="erroNome = false"
                 />
+                <p v-if="erroNome" class="text-red-600 text-xs mt-1">Campo obrigatório para consulta por nome</p>
               </div>
 
               <!-- Campo Órgão -->
