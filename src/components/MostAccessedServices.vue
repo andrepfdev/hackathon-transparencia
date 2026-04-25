@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
 interface Service {
   title: string
   description: string
@@ -12,7 +14,7 @@ const services: Service[] = [
     title: 'Despesas',
     description: 'Veja onde e como o governo está gastando o dinheiro público.',
     icon: 'pi pi-chart-bar',
-    href: '#despesas',
+    href: '/despesas',
   },
   {
     title: 'Contratos & Licitações',
@@ -66,10 +68,11 @@ const services: Service[] = [
         lg:      3 colunas
       -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        <a
+        <component
+          :is="service.href.startsWith('/') ? RouterLink : 'a'"
           v-for="service in services"
           :key="service.title"
-          :href="service.href"
+          v-bind="service.href.startsWith('/') ? { to: service.href } : { href: service.href }"
           class="group flex items-start gap-4 bg-white border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-blue-200 active:bg-blue-50 transition-all min-h-[80px]"
           :class="service.featured ? 'bg-blue-50 border-blue-200 sm:col-span-2 lg:col-span-1' : ''"
         >
@@ -96,7 +99,7 @@ const services: Service[] = [
             class="pi pi-arrow-right text-gray-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all flex-shrink-0 self-center"
             aria-hidden="true"
           />
-        </a>
+        </component>
       </div>
     </div>
   </section>

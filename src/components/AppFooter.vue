@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
 const footerLinks = {
   principal: [
     { label: 'Servidores', href: '#' },
     { label: 'Receitas', href: '#' },
-    { label: 'Despesas', href: '#' },
+    { label: 'Despesas', href: '/despesas' },
   ],
   sobre: [
     { label: 'O que é o Portal?', href: '#' },
@@ -79,9 +81,13 @@ const quickLinks = [
             <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-3">Principal</h3>
             <ul class="flex flex-col gap-2">
               <li v-for="link in footerLinks.principal" :key="link.label">
-                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block">
+                <component
+                  :is="link.href.startsWith('/') ? RouterLink : 'a'"
+                  v-bind="link.href.startsWith('/') ? { to: link.href } : { href: link.href }"
+                  class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block"
+                >
                   {{ link.label }}
-                </a>
+                </component>
               </li>
             </ul>
           </div>
@@ -90,9 +96,13 @@ const quickLinks = [
             <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-3">Sobre o Portal</h3>
             <ul class="flex flex-col gap-2">
               <li v-for="link in footerLinks.sobre" :key="link.label">
-                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block">
+                <component
+                  :is="link.href.startsWith('/') ? RouterLink : 'a'"
+                  v-bind="link.href.startsWith('/') ? { to: link.href } : { href: link.href }"
+                  class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block"
+                >
                   {{ link.label }}
-                </a>
+                </component>
               </li>
             </ul>
           </div>
@@ -101,9 +111,13 @@ const quickLinks = [
             <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-3">Canais de Comunicação</h3>
             <ul class="flex flex-col gap-2">
               <li v-for="link in footerLinks.comunicacao" :key="link.label">
-                <a :href="link.href" class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block">
+                <component
+                  :is="link.href.startsWith('/') ? RouterLink : 'a'"
+                  v-bind="link.href.startsWith('/') ? { to: link.href } : { href: link.href }"
+                  class="text-sm text-blue-100 hover:text-white hover:underline transition-colors py-0.5 block"
+                >
                   {{ link.label }}
-                </a>
+                </component>
               </li>
             </ul>
           </div>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
 interface AccessCard {
   label: string
   icon: string
@@ -33,10 +35,11 @@ const cards: AccessCard[] = [
           sm+:    8 colunas (uma linha)
         -->
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1 sm:gap-2">
-          <a
+          <component
+            :is="card.href.startsWith('/') ? RouterLink : 'a'"
             v-for="card in cards"
             :key="card.label"
-            :href="card.href"
+            v-bind="card.href.startsWith('/') ? { to: card.href } : { href: card.href }"
             class="flex flex-col items-center gap-2 sm:gap-2 p-3 sm:p-4 rounded-xl border border-transparent hover:border-blue-300 hover:bg-blue-50 active:bg-blue-100 transition-all group text-center min-h-[100px] sm:min-h-[auto]"
             :aria-label="`${card.label} — ${card.description}`"
           >
@@ -46,7 +49,7 @@ const cards: AccessCard[] = [
             <span class="text-sm sm:text-xs font-semibold text-gray-700 group-hover:text-blue-700 transition-colors leading-tight">
               {{ card.label }}
             </span>
-          </a>
+          </component>
         </div>
       </div>
     </div>
