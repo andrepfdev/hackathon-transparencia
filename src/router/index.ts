@@ -19,6 +19,11 @@ const router = createRouter({
       name: 'busca-inteligente',
       component: () => import('@/views/BuscaInteligenteView.vue'),
     },
+    {
+      path: '/remuneracao',
+      name: 'remuneracao',
+      component: () => import('@/views/RemuneracaoView.vue'),
+    },
   ],
 })
 
