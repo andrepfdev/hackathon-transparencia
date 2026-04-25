@@ -73,6 +73,20 @@ Mínimo **44×44px** para qualquer elemento interativo.
 <div class="md:hidden">
 ```
 
+### ✅ Rótulos em barras de ação compactas
+Quando o ícone já comunica a ação sozinho (ex.: `+A` / `-A`), suprimir o `shortLabel` no mobile via `v-if` em vez de renderizar texto redundante.
+```html
+<!-- ❌ Renderiza shortLabel mesmo quando o ícone é autoexplicativo -->
+<span class="sm:hidden">{{ action.shortLabel }}</span>
+
+<!-- ✅ Omite shortLabel apenas para ações cujo ícone dispensa legenda -->
+<span
+  v-if="action.id !== 'decrease-font' && action.id !== 'increase-font'"
+  class="sm:hidden"
+>{{ action.shortLabel }}</span>
+```
+> Padrão aplicado em `AccessibilityBar.vue`: ações de ajuste de fonte usam o ícone `+A`/`-A` que é autossuficiente no mobile; demais ações ainda exibem o rótulo curto.
+
 ### ✅ Overflow horizontal em listas
 ```html
 <!-- Lista que pode ser longa no mobile -->
