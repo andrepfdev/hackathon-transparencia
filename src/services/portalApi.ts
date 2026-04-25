@@ -148,8 +148,7 @@ export async function filtrarServidores(filtros: ServidorFiltros = {}): Promise<
     itens = itens.filter((s) => s.nome.toLowerCase().includes(q))
   }
   if (orgao && orgao !== 'all') {
-    const q = orgao.toLowerCase()
-    itens = itens.filter((s) => s.orgao.toLowerCase().includes(q))
+    itens = itens.filter((s) => s.orgao_codigo === orgao)
   }
   if (cargo) {
     const q = cargo.toLowerCase()
