@@ -74,6 +74,68 @@ export async function getReceitas(ano = 2025): Promise<ReceitasResponse> {
   return mockReceitas as ReceitasResponse
 }
 
+export interface DespesaFiltros {
+  ano?: number
+  funcao?: string
+  natureza?: string
+  ug?: string
+  fornecedor?: string
+  situacao?: string
+  subfuncao?: string
+  acao?: string
+  fonte?: string
+  programa?: string
+  categoria?: string
+  pagina?: number
+}
+
+const POR_PAGINA = 10
+
+export async function filtrarDespesas(filtros: DespesaFiltros = {}): Promise<DespesasResponse> {
+  await simulateDelay(300)
+
+  const { ano, funcao, natureza, ug, fornecedor, situacao, subfuncao, acao, fonte, programa, categoria, pagina = 1 } = filtros
+
+  let itens = (mockDespesas as DespesasResponse).data
+
+  if (ano) itens = itens.filter((d) => d.ano === ano)
+  if (funcao && funcao !== 'all') itens = itens.filter((d) => d.funcao === funcao)
+  if (natureza && natureza !== 'all') itens = itens.filter((d) => d.natureza === natureza)
+  if (ug && ug !== 'all') itens = itens.filter((d) => d.unidade_gestora_codigo === ug)
+  if (subfuncao && subfuncao !== 'all') itens = itens.filter((d) => d.subfuncao === subfuncao)
+  if (acao && acao !== 'all') itens = itens.filter((d) => d.acao === acao)
+  if (fonte && fonte !== 'all') itens = itens.filter((d) => d.fonte === fonte)
+  if (programa && programa !== 'all') itens = itens.filter((d) => d.programa === programa)
+  if (categoria && categoria !== 'all') itens = itens.filter((d) => d.categoria === categoria)
+  if (fornecedor) {
+    const q = fornecedor.toLowerCase()
+    itens = itens.filter((d) => d.fornecedor_nome.toLowerCase().includes(q))
+  }
+  if (situacao && situacao !== 'all') itens = itens.filter((d) => d.situacao === situacao)
+
+  const total = itens.length
+  const totalPaginas = Math.max(1, Math.ceil(total / POR_PAGINA))
+  const paginaAtual = Math.min(pagina, totalPaginas)
+  const inicio = (paginaAtual - 1) * POR_PAGINA
+  const dados = itens.slice(inicio, inicio + POR_PAGINA)
+
+  const resumo = (mockDespesas as DespesasResponse).resumo
+
+  return {
+    meta: {
+      endpoint: '/app/v2/despesas',
+      ano: ano ?? (mockDespesas as DespesasResponse).meta.ano,
+      atualizado_em: (mockDespesas as DespesasResponse).meta.atualizado_em,
+      total_registros: total,
+      pagina_atual: paginaAtual,
+      total_paginas: totalPaginas,
+    },
+    resumo,
+    por_funcao: (mockDespesas as DespesasResponse).por_funcao,
+    data: dados,
+  }
+}
+
 /**
  * Autocomplete de fornecedores — único endpoint real funcionando.
  * Retorna: [{id_value, label, doc}]

@@ -16,12 +16,18 @@ function searchTerm(term: string) {
 </script>
 
 <template>
-  <section class="bg-gray-50 border-b border-gray-200 py-8 px-4 md:py-12">
-    <div class="container text-center">
-      <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#1a3a6e] mb-2 leading-tight">
+  <section
+    class="relative border-b border-gray-800 py-12 px-4 md:py-20 overflow-hidden"
+    style="background-image: url('/img/cultura_maranhao.webp'); background-size: cover; background-position: center;"
+  >
+    <!-- overlay escuro -->
+    <div class="absolute inset-0 bg-black/53" aria-hidden="true" />
+
+    <div class="relative container text-center">
+      <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 leading-tight drop-shadow-md">
         O que você procura no Portal?
       </h1>
-      <p class="text-gray-500 text-sm mb-6 max-w-md mx-auto">
+      <p class="text-blue-100 text-sm mb-6 max-w-md mx-auto drop-shadow">
         Use termos simples. Ex: salário de servidores, obras na minha cidade, contratos de merenda.
       </p>
 
@@ -54,11 +60,11 @@ function searchTerm(term: string) {
       </div>
 
       <div class="flex items-center justify-center gap-2 flex-wrap">
-        <span class="text-xs text-gray-400">Populares:</span>
+        <span class="text-xs text-blue-200">Populares:</span>
         <button
           v-for="term in quickSearches"
           :key="term"
-          class="text-xs text-slate-600 hover:text-slate-800 border border-blue-200 rounded-full px-3 py-1.5 bg-white transition-colors min-h-[36px]"
+          class="text-xs text-white hover:text-white border border-white/30 hover:border-white/60 rounded-full px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors min-h-[36px]"
           @click="searchTerm(term)"
         >
           {{ term }}

@@ -11,6 +11,9 @@ export interface DespesaItem {
   subfuncao: string
   programa: string
   natureza: string
+  categoria: string
+  acao: string
+  fonte: string
   valor_empenhado: number
   valor_liquidado: number
   valor_pago: number
