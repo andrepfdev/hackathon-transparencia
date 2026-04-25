@@ -18,10 +18,10 @@ function searchTerm(term: string) {
 <template>
   <section
     class="relative border-b border-gray-800 py-12 px-4 md:py-20 overflow-hidden"
-    style="background-image: url('/img/lencois-maranhenses.webp'); background-size: cover; background-position: center;"
+    style="background-image: url('/img/cultura_maranhao.webp'); background-size: cover; background-position: center;"
   >
     <!-- overlay escuro -->
-    <div class="absolute inset-0 bg-black/68" aria-hidden="true" />
+    <div class="absolute inset-0 bg-black/55" aria-hidden="true" />
 
     <div class="relative container text-center">
       <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 leading-tight drop-shadow-md">
