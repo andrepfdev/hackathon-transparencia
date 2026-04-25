@@ -53,7 +53,8 @@ export const INTENCOES = {
     'servidores', 'funcionários', 'servidores públicos', 'salários',
     'remuneração', 'salário', 'quanto ganha', 'quanto ganham',
     'quadro de pessoal', 'efetivos', 'concursados', 'comissionados',
-    'cargos', 'trabalhadores', 'empregados públicos',
+    'cargos', 'trabalhadores', 'empregados públicos', 'pessoal',
+    'folha de pagamento', 'contracheque', 'rendimento',
   ],
   contratos: [
     'contratos', 'licitações', 'licitação', 'compras', 'empresas contratadas',
@@ -84,7 +85,13 @@ export const CAMPOS_FILTRO = {
   },
   servidores: {
     ano: 'ano de referência',
+    mes: 'mês de referência',
+    nome: 'nome do servidor',
+    orgao: 'órgão ou secretaria',
+    cargo: 'cargo ou função',
     vinculo: 'Estatutário | Comissionado | Temporário',
+    situacao: 'Ativo | Inativo | Aposentado',
+    municipio: 'município de exercício',
   },
   contratos: {
     ano: 'ano de assinatura',

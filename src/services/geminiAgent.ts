@@ -1,5 +1,5 @@
 import { TERMOS_TECNICOS, INTENCOES, CAMPOS_FILTRO, FUNCOES_ORCAMENTO } from '@/data/thesaurus/termosAgente'
-import { filtrarDespesas, getServidores, getContratos, getReceitas } from './portalApi'
+import { filtrarDespesas, filtrarServidores, getContratos, getReceitas } from './portalApi'
 import type { TipoIntencao } from '@/data/thesaurus/termosAgente'
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions'
@@ -101,8 +101,18 @@ async function consultarDados(
     }
 
     if (intencao === 'servidores') {
-      const resp = await getServidores(filtros.ano ? Number(filtros.ano) : undefined)
-      return `Existem ${resp.resumo.total_servidores.toLocaleString('pt-BR')} servidores públicos ativos no cadastro.`
+      const resp = await filtrarServidores({
+        ano: filtros.ano ? Number(filtros.ano) : undefined,
+        mes: filtros.mes,
+        nome: filtros.nome,
+        orgao: filtros.orgao,
+        cargo: filtros.cargo,
+        vinculo: filtros.vinculo,
+        situacao: filtros.situacao,
+        municipio: filtros.municipio,
+      })
+      const { resumo, meta } = resp
+      return `Encontrei ${meta.total_registros.toLocaleString('pt-BR')} servidores. Total da folha: ${formatarMoeda(resumo.total_folha)}. Média salarial: ${formatarMoeda(resumo.media_salarial)}.`
     }
 
     if (intencao === 'contratos') {

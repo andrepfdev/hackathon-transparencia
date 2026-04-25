@@ -250,7 +250,7 @@ onMounted(() => {
               rows="1"
               placeholder="Digite sua pergunta sobre os dados do MA..."
               aria-label="Digite sua pergunta"
-              class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 pr-12 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
               style="min-height: 44px; max-height: 120px"
               :disabled="carregando"
               @input="ajustarAlturaInput"
@@ -259,7 +259,7 @@ onMounted(() => {
           </div>
           <button
             type="button"
-            class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
+            class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
             aria-label="Enviar pergunta"
             :disabled="carregando || !inputTexto.trim()"
             @click="enviar()"
