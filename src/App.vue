@@ -1,11 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useAccessibilityStore } from '@/stores/accessibility'
+
+const a11y = useAccessibilityStore()
+onMounted(() => a11y.init())
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
-</template>
+  <!-- Skip link: primeiro elemento focável, pula direto para o conteúdo -->
+  <a href="#main-content" class="skip-link">Ir para o conteúdo principal</a>
 
-<style scoped></style>
+  <RouterView />
+</template>

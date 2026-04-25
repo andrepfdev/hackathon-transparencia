@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "endpoint": "/app/v2/pessoal/remuneracao",
+    "ano": 2025,
+    "mes": "04",
+    "atualizado_em": "2025-04-18",
+    "total_registros": 84500,
+    "pagina_atual": 1,
+    "total_paginas": 845
+  },
+  "resumo": {
+    "total_servidores": 84500,
+    "total_folha": 620000000.00,
+    "por_vinculo": [
+      { "vinculo": "Estatutário", "nome_cidadao": "Concursado", "quantidade": 52390, "percentual": 62 },
+      { "vinculo": "Comissionado", "nome_cidadao": "Cargo de confiança", "quantidade": 23660, "percentual": 28 },
+      { "vinculo": "Temporário", "nome_cidadao": "Contrato temporário", "quantidade": 8450, "percentual": 10 }
+    ]
+  },
+  "data": [
+    {
+      "id": 1,
+      "matricula": "001234",
+      "nome": "ANA CARLA SILVA",
+      "orgao": "Secretaria de Saúde do Estado",
+      "orgao_codigo": "110201",
+      "cargo": "Médico",
+      "nivel": "Nível Superior",
+      "vinculo": "Estatutário",
+      "remuneracao_bruta": 12800.00,
+      "descontos": 2816.00,
+      "remuneracao_liquida": 9984.00,
+      "municipio_exercicio": "São Luís"
+    },
+    {
+      "id": 2,
+      "matricula": "002345",
+      "nome": "JOÃO PEDRO COSTA",
+      "orgao": "Secretaria de Educação do Estado",
+      "orgao_codigo": "110301",
+      "cargo": "Professor",
+      "nivel": "Nível Superior",
+      "vinculo": "Estatutário",
+      "remuneracao_bruta": 6400.00,
+      "descontos": 1408.00,
+      "remuneracao_liquida": 4992.00,
+      "municipio_exercicio": "Imperatriz"
+    },
+    {
+      "id": 3,
+      "matricula": "003456",
+      "nome": "MARIA JOSE BARBOSA",
+      "orgao": "Secretaria de Segurança Pública",
+      "orgao_codigo": "120101",
+      "cargo": "Delegado de Polícia",
+      "nivel": "Nível Superior",
+      "vinculo": "Estatutário",
+      "remuneracao_bruta": 15200.00,
+      "descontos": 3344.00,
+      "remuneracao_liquida": 11856.00,
+      "municipio_exercicio": "São Luís"
+    },
+    {
+      "id": 4,
+      "matricula": "004567",
+      "nome": "CARLOS AUGUSTO LIMA",
+      "orgao": "Secretaria de Infraestrutura",
+      "orgao_codigo": "130101",
+      "cargo": "Engenheiro Civil",
+      "nivel": "Nível Superior",
+      "vinculo": "Estatutário",
+      "remuneracao_bruta": 9800.00,
+      "descontos": 2156.00,
+      "remuneracao_liquida": 7644.00,
+      "municipio_exercicio": "São Luís"
+    },
+    {
+      "id": 5,
+      "matricula": "005678",
+      "nome": "FRANCISCA NASCIMENTO",
+      "orgao": "Secretaria de Saúde do Estado",
+      "orgao_codigo": "110201",
+      "cargo": "Enfermeiro",
+      "nivel": "Nível Superior",
+      "vinculo": "Temporário",
+      "remuneracao_bruta": 5200.00,
+      "descontos": 780.00,
+      "remuneracao_liquida": 4420.00,
+      "municipio_exercicio": "Caxias"
+    }
+  ]
+}

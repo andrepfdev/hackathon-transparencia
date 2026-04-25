@@ -1,0 +1,22 @@
+{
+  "$version": 3,
+  "model": "opencode-go/qwen3.6-plus",
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(node *)",
+      "Bash(npx *)",
+      "Bash(mkdir *)",
+      "Bash(rm *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(echo *)",
+      "Bash(curl *)",
+      "Bash(python3 *)"
+    ]
+  }
+}
