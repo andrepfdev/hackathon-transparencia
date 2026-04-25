@@ -21,7 +21,7 @@ function searchTerm(term: string) {
     style="background-image: url('/img/cultura_maranhao.webp'); background-size: cover; background-position: center;"
   >
     <!-- overlay escuro -->
-    <div class="absolute inset-0 bg-black/55" aria-hidden="true" />
+    <div class="absolute inset-0 bg-black/53" aria-hidden="true" />
 
     <div class="relative container text-center">
       <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 leading-tight drop-shadow-md">
