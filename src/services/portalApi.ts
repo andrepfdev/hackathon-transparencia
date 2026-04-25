@@ -12,7 +12,7 @@
  */
 
 import type { DespesasResponse } from './types/despesas'
-import type { ServidoresResponse } from './types/servidores'
+import type { ServidoresResponse, ServidorFiltros } from './types/servidores'
 import type { ContratosResponse } from './types/contratos'
 import type { ReceitasResponse } from './types/receitas'
 import type { Fornecedor } from './types/fornecedor'
@@ -132,6 +132,54 @@ export async function filtrarDespesas(filtros: DespesaFiltros = {}): Promise<Des
     },
     resumo,
     por_funcao: (mockDespesas as DespesasResponse).por_funcao,
+    data: dados,
+  }
+}
+
+export async function filtrarServidores(filtros: ServidorFiltros = {}): Promise<ServidoresResponse> {
+  await simulateDelay(300)
+
+  const { nome, orgao, cargo, vinculo, situacao, municipio, pagina = 1 } = filtros
+
+  let itens = (mockServidores as ServidoresResponse).data
+
+  if (nome) {
+    const q = nome.toLowerCase()
+    itens = itens.filter((s) => s.nome.toLowerCase().includes(q))
+  }
+  if (orgao && orgao !== 'all') {
+    itens = itens.filter((s) => s.orgao_codigo === orgao)
+  }
+  if (cargo) {
+    const q = cargo.toLowerCase()
+    itens = itens.filter((s) => s.cargo.toLowerCase().includes(q))
+  }
+  if (vinculo && vinculo !== 'all') itens = itens.filter((s) => s.vinculo === vinculo)
+  if (situacao && situacao !== 'all') itens = itens.filter((s) => s.situacao === situacao)
+  if (municipio && municipio !== 'all') {
+    const q = municipio.toLowerCase()
+    itens = itens.filter((s) => s.municipio_exercicio.toLowerCase().includes(q))
+  }
+
+  const total = itens.length
+  const totalPaginas = Math.max(1, Math.ceil(total / POR_PAGINA))
+  const paginaAtual = Math.min(pagina, totalPaginas)
+  const inicio = (paginaAtual - 1) * POR_PAGINA
+  const dados = itens.slice(inicio, inicio + POR_PAGINA)
+
+  const resumo = (mockServidores as ServidoresResponse).resumo
+
+  return {
+    meta: {
+      endpoint: '/app/v2/pessoal/remuneracao',
+      ano: filtros.ano ?? (mockServidores as ServidoresResponse).meta.ano,
+      mes: filtros.mes ?? (mockServidores as ServidoresResponse).meta.mes,
+      atualizado_em: (mockServidores as ServidoresResponse).meta.atualizado_em,
+      total_registros: total,
+      pagina_atual: paginaAtual,
+      total_paginas: totalPaginas,
+    },
+    resumo,
     data: dados,
   }
 }

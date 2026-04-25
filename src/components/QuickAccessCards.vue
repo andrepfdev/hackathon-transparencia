@@ -12,7 +12,7 @@ const cards: AccessCard[] = [
   { label: 'Despesas', icon: 'pi pi-chart-bar', href: '/despesas', description: 'Gastos do Estado' },
   { label: 'Receitas', icon: 'pi pi-money-bill', href: '#receitas', description: 'Arrecadação pública' },
   { label: 'Pessoal + Diárias', icon: 'pi pi-users', href: '#pessoal', description: 'Folha de pagamento e diárias' },
-  { label: 'Remuneração', icon: 'pi pi-chart-line', href: '#remuneracao', description: 'Remuneração de servidores' },
+  { label: 'Remuneração', icon: 'pi pi-chart-line', href: '/remuneracao', description: 'Remuneração de servidores' },
   { label: 'Transferências', icon: 'pi pi-arrows-h', href: '#transferencias', description: 'Repasses e transferências' },
   { label: 'Extraorçamentário', icon: 'pi pi-database', href: '#extraorcamentario', description: 'Recursos extraorçamentários' },
   { label: 'Licitações', icon: 'pi pi-search', href: '#licitacoes', description: 'Processos licitatórios' },
