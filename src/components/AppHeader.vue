@@ -27,7 +27,9 @@ const socialLinks = [
 
     <div class="container flex items-center justify-between py-3">
       <div class="flex items-center gap-2 sm:gap-3">
-        <img src="/img/brasao_ma.png" alt="Brasão do Estado do Maranhão" class="h-12  w-auto">
+        <RouterLink to="/" class="flex items-center gap-2 sm:gap-3">
+          <img src="/img/brasao_ma.png" alt="Brasão do Estado do Maranhão" class="h-12  w-auto">
+        </RouterLink>
         <div class="w-1 h-10 bg-blue-600 rounded-full hidden sm:block" aria-hidden="true" />
         <a href="/" aria-label="Portal da Transparência - Governo do Estado do Maranhão">
           <span class="text-base sm:text-xl font-bold text-[#1a3a6e] leading-tight block">Portal da Transparência</span>

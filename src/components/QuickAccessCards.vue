@@ -7,7 +7,7 @@ interface AccessCard {
 }
 
 const cards: AccessCard[] = [
-  { label: 'Despesas', icon: 'pi pi-chart-bar', href: '#despesas', description: 'Gastos do Estado' },
+  { label: 'Despesas', icon: 'pi pi-chart-bar', href: '/despesas', description: 'Gastos do Estado' },
   { label: 'Receitas', icon: 'pi pi-money-bill', href: '#receitas', description: 'Arrecadação pública' },
   { label: 'Pessoal + Diárias', icon: 'pi pi-users', href: '#pessoal', description: 'Folha de pagamento e diárias' },
   { label: 'Remuneração', icon: 'pi pi-chart-line', href: '#remuneracao', description: 'Remuneração de servidores' },
