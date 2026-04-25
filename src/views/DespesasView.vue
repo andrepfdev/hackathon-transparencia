@@ -443,13 +443,13 @@ function exportarPDF() {
             </div>
             <!-- Unidade Gestora -->
             <div>
-              <label class="block text-xs text-gray-600 mb-1">Unidade Gestora</label>
+              <label class="block text-xs text-gray-600 mb-1">Visualizar por</label>
               <select
-                v-model="filtros.ug"
-                class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm bg-white focus-visible:outline-2 focus-visible:outline-blue-600"
-              >
-                <option v-for="u in ugs" :key="u.codigo" :value="u.codigo">{{ u.nome }}</option>
-              </select>
+                  v-model="visualizacao"
+                  class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm bg-white focus-visible:outline-2 focus-visible:outline-blue-600"
+                >
+                  <option v-for="v in visualizacaoOpcoes" :key="v" :value="v">{{ v }}</option>
+                </select>
             </div>
             <!-- Situação -->
             <div>
