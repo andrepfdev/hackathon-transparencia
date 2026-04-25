@@ -36,7 +36,7 @@ const quickLinks = [
   <footer>
     <!-- Rede de Transparência + links rápidos -->
     <div class="bg-gray-100 py-8 px-4">
-      <div class="container flex flex-col items-center gap-6">
+      <div class="container flex flex-col items-center gap-12">
         <!-- Selo -->
         <div class="bg-white border border-gray-200 rounded-xl px-6 py-3 flex items-center gap-3 shadow-sm">
           <i class="pi pi-link text-blue-600 text-2xl" aria-hidden="true" />

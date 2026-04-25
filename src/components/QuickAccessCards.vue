@@ -24,21 +24,21 @@ const cards: AccessCard[] = [
     <div class="container">
       <div class="bg-white rounded-2xl shadow-md border border-gray-300 p-3 sm:p-6">
         <!--
-          Mobile: 4 colunas (ícone compacto)
+          Mobile: 2 colunas (ícone nítido)
           sm+:    8 colunas (uma linha)
         -->
-        <div class="grid grid-cols-4 sm:grid-cols-8 gap-1 sm:gap-2">
+        <div class="grid grid-cols-2 sm:grid-cols-8 gap-1 sm:gap-2">
           <a
             v-for="card in cards"
             :key="card.label"
             :href="card.href"
-            class="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-4 rounded-xl border border-transparent hover:border-blue-300 hover:bg-blue-50 active:bg-blue-100 transition-all group text-center min-h-[72px] sm:min-h-[auto]"
+            class="flex flex-col items-center gap-2 sm:gap-2 p-3 sm:p-4 rounded-xl border border-transparent hover:border-blue-300 hover:bg-blue-50 active:bg-blue-100 transition-all group text-center min-h-[100px] sm:min-h-[auto]"
             :aria-label="`${card.label} — ${card.description}`"
           >
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-white group-hover:ring-2 group-hover:ring-blue-300 transition-all shadow-sm flex-shrink-0">
-              <i :class="[card.icon, card.color]" class="text-base sm:text-xl" aria-hidden="true" />
+            <div class="w-14 h-14 sm:w-12 sm:h-12 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-white group-hover:ring-2 group-hover:ring-blue-300 transition-all shadow-sm flex-shrink-0">
+              <i :class="[card.icon, card.color]" class="text-2xl sm:text-xl" aria-hidden="true" />
             </div>
-            <span class="text-[10px] sm:text-xs font-semibold text-gray-700 group-hover:text-blue-700 transition-colors leading-tight">
+            <span class="text-sm sm:text-xs font-semibold text-gray-700 group-hover:text-blue-700 transition-colors leading-tight">
               {{ card.label }}
             </span>
           </a>

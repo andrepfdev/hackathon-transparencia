@@ -58,7 +58,7 @@ function searchTerm(term: string) {
         <button
           v-for="term in quickSearches"
           :key="term"
-          class="text-xs text-blue-600 hover:text-blue-800 border border-blue-200 rounded-full px-3 py-1.5 bg-white transition-colors min-h-[36px]"
+          class="text-xs text-slate-600 hover:text-slate-800 border border-blue-200 rounded-full px-3 py-1.5 bg-white transition-colors min-h-[36px]"
           @click="searchTerm(term)"
         >
           {{ term }}
