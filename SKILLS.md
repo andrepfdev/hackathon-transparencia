@@ -154,6 +154,61 @@ Mocks em `src/data/mock/*.json` com estrutura idêntica ao que a API retornaria.
 
 ---
 
+## 🤖 Agente Gemini (Busca em Linguagem Natural)
+
+### Arquitetura
+
+| Arquivo | Responsabilidade |
+|---|---|
+| `src/services/geminiAgent.ts` | Serviço principal — chama a API Gemini e consulta os mocks |
+| `src/data/thesaurus/termosAgente.ts` | Glossário, intenções e campos de filtro para o system prompt |
+| `src/views/BuscaInteligenteView.vue` | Interface de chat conversacional (`/busca-inteligente`) |
+
+### Configuração
+
+```bash
+# .env (nunca commitar — está no .gitignore)
+VITE_GEMINI_API_KEY=sua_chave_aqui
+
+# Obter chave em: https://aistudio.google.com/app/apikey
+```
+
+Acesso no código: `import.meta.env.VITE_GEMINI_API_KEY`
+
+### Modelo e endpoint
+
+- Modelo: `gemini-1.5-flash` (free tier disponível — 15 RPM, 1500 req/dia)
+- Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`
+- Integração: `fetch` nativo — sem SDK extra como dependência
+
+### Fluxo do agente
+
+```
+usuário digita → enviarMensagem() → system prompt (thesaurus + campos)
+→ Gemini retorna JSON → parse da intenção + filtros
+→ consulta mock local (filtrarDespesas / getServidores / etc.)
+→ exibe resposta enriquecida + botão "Ver detalhes" com link
+```
+
+### Regras obrigatórias
+
+1. **System prompt** sempre inclui `TERMOS_TECNICOS`, `CAMPOS_FILTRO` e `FUNCOES_ORCAMENTO` do thesaurus
+2. **Resposta do Gemini** deve ser JSON puro — sem markdown fence, sem texto extra
+3. **Histórico** mantém no máximo as últimas 20 mensagens (10 trocas) para controlar tokens
+4. **Sem chave configurada** → exibe mensagem de erro amigável ao usuário, não exceção
+5. **Dados** vêm sempre dos mocks locais via `portalApi.ts` — o Gemini nunca inventa números
+
+### termosAgente.ts — estrutura
+
+```ts
+TERMOS_TECNICOS   // técnico → linguagem cidadã (para o system prompt)
+INTENCOES         // palavras-chave por categoria (despesas/servidores/contratos/receitas)
+CAMPOS_FILTRO     // filtros disponíveis por categoria (para o Gemini saber o que extrair)
+FUNCOES_ORCAMENTO // áreas com sinônimos (ex: "saúde", "hospital" → "Saúde")
+```
+
+---
+
 ## 🤖 OpenCode / Qwen
 
 Configuração em `.opencode/`:

@@ -14,6 +14,11 @@ const router = createRouter({
       name: 'despesas',
       component: () => import('@/views/DespesasView.vue'),
     },
+    {
+      path: '/busca-inteligente',
+      name: 'busca-inteligente',
+      component: () => import('@/views/BuscaInteligenteView.vue'),
+    },
   ],
 })
 
