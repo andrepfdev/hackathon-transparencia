@@ -113,7 +113,7 @@ const actions = computed<Action[]>(() => [
             <i v-else :class="action.icon" class="text-[11px]" />
           </span>
           <span class="hidden sm:inline">{{ action.label }}</span>
-          <span class="sm:hidden">{{ action.shortLabel }}</span>
+          <span v-if="action.id !== 'decrease-font' && action.id !== 'increase-font'" class="sm:hidden">{{ action.shortLabel }}</span>
         </button>
 
         <!-- Indicador do tamanho de fonte atual -->
