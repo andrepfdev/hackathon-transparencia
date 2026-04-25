@@ -31,10 +31,10 @@ const socialLinks = [
           <img src="/img/brasao_ma.png" alt="Brasão do Estado do Maranhão" class="h-12  w-auto">
         </RouterLink>
         <div class="w-1 h-10 bg-blue-600 rounded-full hidden sm:block" aria-hidden="true" />
-        <a href="/" aria-label="Portal da Transparência - Governo do Estado do Maranhão">
+        <RouterLink to="/" aria-label="Portal da Transparência - Governo do Estado do Maranhão">
           <span class="text-base sm:text-xl font-bold text-[#1a3a6e] leading-tight block">Portal da Transparência</span>
           <span class="text-xs text-gray-500">Governo do Estado do Maranhão</span>
-        </a>
+        </RouterLink>
       </div>
 
       <div class="flex items-center gap-3">
@@ -65,9 +65,9 @@ const socialLinks = [
       <div class="container">
         <ul class="hidden md:flex items-center gap-0.5 py-0.5">
           <li>
-            <a href="/" class="flex items-center px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm transition-colors" aria-label="Início">
+            <RouterLink to="/" class="flex items-center px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm transition-colors" aria-label="Início">
               <i class="pi pi-home text-sm" aria-hidden="true" />
-            </a>
+            </RouterLink>
           </li>
           <li v-for="link in navLinks" :key="link.label">
             <a
@@ -81,10 +81,10 @@ const socialLinks = [
         </ul>
 
         <div class="md:hidden flex items-center justify-between py-1.5">
-          <a href="/" class="flex items-center gap-1 text-[#1a3a6e] text-sm font-medium">
+          <RouterLink to="/" class="flex items-center gap-1 text-[#1a3a6e] text-sm font-medium">
             <i class="pi pi-home text-sm" aria-hidden="true" />
             <span>Início</span>
-          </a>
+          </RouterLink>
           <button
             class="flex items-center gap-1.5 text-[#1a3a6e] font-semibold text-sm px-2 py-1.5 rounded hover:bg-blue-50 transition-colors min-h-[44px]"
             :aria-expanded="mobileMenuOpen"
