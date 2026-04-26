@@ -12,7 +12,17 @@ import { useGeminiTTS } from '@/composables/useGeminiTTS'
 const router = useRouter()
 
 function renderMarkdown(text: string): string {
-  const escaped = text
+  // Converte HTML para markdown antes do escape, caso o modelo retorne HTML
+  const normalized = text
+    .replace(/<strong>([\s\S]*?)<\/strong>/gi, '**$1**')
+    .replace(/<b>([\s\S]*?)<\/b>/gi, '**$1**')
+    .replace(/<em>([\s\S]*?)<\/em>/gi, '*$1*')
+    .replace(/<i>([\s\S]*?)<\/i>/gi, '*$1*')
+    .replace(/<li>([\s\S]*?)<\/li>/gi, '- $1\n')
+    .replace(/<\/?(ul|ol|p|br)[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+
+  const escaped = normalized
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(?!\s)(.+?)(?<!\s)\*/g, '<em>$1</em>')
