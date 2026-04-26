@@ -172,7 +172,7 @@ function verificarRespostaLocal(mensagem: string): RespostaAgente | null {
     q.includes('hackathon') || q.includes('hacaton') || q.includes('hack') ||
     q.includes('ratato') || q.includes('rataou') || q.includes('rataton') ||
     q.includes('racaton') || q.includes('hakadon') || q.includes('acaton') ||
-    q.includes('ratan') || q.includes('hakaton')
+    q.includes('ratan') || q.includes('hakaton') || q.includes('cartoon')
 
   const mencionaTransparencia =
     q.includes('transparenci') || q.includes('portal')
