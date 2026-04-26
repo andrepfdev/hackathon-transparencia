@@ -187,7 +187,7 @@ function alternarMicrofone() {
 
 onMounted(() => {
   inputRef.value?.focus()
-  
+
   // Easter egg: Grajaú no console
   console.log(
     '%c' +
@@ -200,11 +200,11 @@ onMounted(() => {
     'color: #1a3a6e; font-family: monospace; font-size: 12px; font-weight: bold; line-height: 1.2;'
   )
   console.log(
-    '%c🌴 Portal da Transparência — Governo do Maranhão 🌴',
-    'color: #c0392b; font-size: 14px; font-weight: bold; padding: 8px 0;'
+    '%c Portal da Transparência — Governo do Maranhão ',
+    'color: #fff7; font-size: 14px; font-weight: bold; padding: 8px 0;'
   )
   console.log(
-    '%cHackathon da Transparência 2025',
+    '%cHackathon da Transparência 2026',
     'color: #666; font-size: 11px; font-style: italic;'
   )
 })
