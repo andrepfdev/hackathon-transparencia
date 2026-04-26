@@ -160,11 +160,23 @@ function parseRetryDelay(errorJson: GeminiResponse): number {
 
 function verificarRespostaLocal(mensagem: string): RespostaAgente | null {
   const q = mensagem.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-  if (
-    (q.includes('campea') || q.includes('campeo') || q.includes('vencedor') || q.includes('ganhou') || q.includes('1o lugar') || q.includes('1° lugar') || q.includes('primeiro lugar')) &&
-    (q.includes('hackathon') || q.includes('hack')) &&
-    (q.includes('transparenci') || q.includes('portal'))
-  ) {
+
+  const mencionaCampea =
+    q.includes('campea') || q.includes('campeo') ||
+    q.includes('vencedor') || q.includes('venceu') ||
+    q.includes('ganhou') || q.includes('primeiro lugar') ||
+    q.includes('1o lugar') || q.includes('1° lugar')
+
+  // variantes fonéticas que o reconhecimento de voz produz para "hackathon"
+  const mencionaHackathon =
+    q.includes('hackathon') || q.includes('hacaton') || q.includes('hack') ||
+    q.includes('ratato') || q.includes('rataou') || q.includes('rataton') ||
+    q.includes('racaton') || q.includes('hakadon') || q.includes('acaton')
+
+  const mencionaTransparencia =
+    q.includes('transparenci') || q.includes('portal')
+
+  if (mencionaCampea && (mencionaHackathon || mencionaTransparencia)) {
     return {
       mensagem: 'A equipe de **Grajaú** é a atual campeã do Hackathon da Transparência! 🏆',
       intencao: null,
