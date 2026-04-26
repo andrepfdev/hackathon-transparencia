@@ -39,4 +39,6 @@ __screenshots__/
 *.timestamp-*-*.mjs
 
 # Variáveis de ambiente com chaves de API
-#.env
+.env
+.env.local
+.env.*.local
