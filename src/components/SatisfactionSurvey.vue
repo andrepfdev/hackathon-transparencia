@@ -13,6 +13,7 @@ const notaSelecionada = ref(0)
 const notaHover = ref(0)
 const mensagem = ref('')
 const enviado = ref(false)
+const mostrarToast = ref(false)
 
 const MAX_CARACTERES = 200
 
@@ -35,6 +36,8 @@ function enviarAvaliacao() {
   )
   
   enviado.value = true
+  mostrarToast.value = true
+  setTimeout(() => { mostrarToast.value = false }, 3500)
 }
 
 function getLabelEstrela(nota: number): string {
@@ -159,4 +162,26 @@ function getLabelEstrela(nota: number): string {
       </div>
     </div>
   </section>
+
+  <!-- Toast de confirmação (fora do v-if/v-else para não quebrar a cadeia) -->
+  <Teleport to="body">
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="translate-y-4 opacity-0"
+      enter-to-class="translate-y-0 opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="translate-y-0 opacity-100"
+      leave-to-class="translate-y-4 opacity-0"
+    >
+      <div
+        v-if="mostrarToast"
+        role="status"
+        aria-live="polite"
+        class="fixed bottom-6 right-4 sm:right-6 z-50 flex items-center gap-3 rounded-xl bg-green-600 px-5 py-3.5 text-white shadow-lg"
+      >
+        <i class="pi pi-check-circle text-xl" aria-hidden="true" />
+        <span class="text-sm font-medium">Avaliação enviada com sucesso!</span>
+      </div>
+    </Transition>
+  </Teleport>
 </template>

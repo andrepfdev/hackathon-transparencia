@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SatisfactionSurvey from '@/components/SatisfactionSurvey.vue'
@@ -10,6 +10,7 @@ import { useSpeechRecognition } from '@/composables/useSpeechRecognition'
 import { useGeminiTTS } from '@/composables/useGeminiTTS'
 
 const router = useRouter()
+const route = useRoute()
 
 function renderMarkdown(text: string): string {
   // Converte HTML para markdown antes do escape, caso o modelo retorne HTML
@@ -196,7 +197,12 @@ function alternarMicrofone() {
 }
 
 onMounted(() => {
-  inputRef.value?.focus()
+  const queryInicial = route.query.q
+  if (queryInicial && typeof queryInicial === 'string' && queryInicial.trim()) {
+    enviar(queryInicial.trim())
+  } else {
+    inputRef.value?.focus()
+  }
 
   // Easter egg: Grajaú no console
   console.log(
