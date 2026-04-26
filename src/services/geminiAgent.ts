@@ -2,8 +2,10 @@ import { TERMOS_TECNICOS, INTENCOES, CAMPOS_FILTRO, FUNCOES_ORCAMENTO } from '@/
 import { filtrarDespesas, filtrarServidores, getContratos, getReceitas } from './portalApi'
 import type { TipoIntencao } from '@/data/thesaurus/termosAgente'
 
-const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions'
-const DEEPSEEK_MODEL = 'deepseek-chat'
+const GEMINI_URL =
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
+
+const MAX_RETRIES = 2
 
 export interface MensagemHistorico {
   role: 'user' | 'assistant'
@@ -36,8 +38,13 @@ function montarSystemPrompt(): string {
     })
     .join('\n')
 
+  const hoje = new Date()
+  const dataAtual = hoje.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+
   return `Você é um assistente de transparência pública do Portal da Transparência do Maranhão (MA).
 Seu objetivo é ajudar cidadãos a consultar dados públicos usando linguagem simples e acessível.
+
+DATA ATUAL: ${dataAtual}. Use isso para contextualizar anos e períodos mencionados pelo usuário.
 
 CATEGORIAS DE DADOS DISPONÍVEIS:
 - despesas: gastos do governo estadual
@@ -132,86 +139,122 @@ async function consultarDados(
   return ''
 }
 
-interface DeepSeekResponse {
-  choices?: Array<{
-    message?: { content?: string }
+interface GeminiResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{ text?: string }>
+    }
   }>
+  error?: {
+    code?: number
+    details?: Array<{ retryDelay?: string }>
+  }
+}
+
+function parseRetryDelay(errorJson: GeminiResponse): number {
+  const delayStr = errorJson.error?.details?.find((d) => d.retryDelay)?.retryDelay ?? ''
+  const seconds = parseInt(delayStr, 10)
+  return isNaN(seconds) ? 5000 : seconds * 1000
 }
 
 export async function enviarMensagem(
   mensagemUsuario: string,
   historico: MensagemHistorico[] = [],
 ): Promise<RespostaAgente> {
-  const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY as string | undefined
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined
 
   if (!apiKey) {
     return {
       mensagem:
-        'O assistente não está configurado. Adicione a chave VITE_DEEPSEEK_API_KEY no arquivo .env.',
+        'O assistente não está configurado. Adicione a chave VITE_GEMINI_API_KEY no arquivo .env.',
       intencao: null,
     }
   }
 
-  const messages = [
-    { role: 'system', content: montarSystemPrompt() },
-    ...historico.map((m) => ({ role: m.role, content: m.text })),
-    { role: 'user', content: mensagemUsuario },
+  // Gemini usa "model" em vez de "assistant"
+  const contents = [
+    ...historico.map((m) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.text }],
+    })),
+    { role: 'user', parts: [{ text: mensagemUsuario }] },
   ]
 
-  try {
-    const response = await fetch(DEEPSEEK_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: DEEPSEEK_MODEL,
-        messages,
-        temperature: 0.3,
-        max_tokens: 1024,
-      }),
-    })
+  const body = JSON.stringify({
+    systemInstruction: { parts: [{ text: montarSystemPrompt() }] },
+    contents,
+    generationConfig: { temperature: 0.3, maxOutputTokens: 1024 },
+  })
 
-    if (!response.ok) {
-      const err = await response.text()
-      console.error('DeepSeek API error:', err)
+  let attempt = 0
+  while (attempt <= MAX_RETRIES) {
+    try {
+      const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
+
+      if (response.status === 429) {
+        const errorJson: GeminiResponse = await response.json()
+        console.warn('Gemini 429:', JSON.stringify(errorJson, null, 2))
+        if (attempt < MAX_RETRIES) {
+          const delay = parseRetryDelay(errorJson)
+          await new Promise((r) => setTimeout(r, delay))
+          attempt++
+          continue
+        }
+        return {
+          mensagem: 'O assistente está sobrecarregado no momento. Aguarde alguns segundos e tente novamente.',
+          intencao: null,
+        }
+      }
+
+      if (!response.ok) {
+        const err = await response.text()
+        console.error('Gemini API error:', err)
+        return {
+          mensagem: 'Não consegui processar sua pergunta agora. Tente novamente em instantes.',
+          intencao: null,
+        }
+      }
+
+      const json: GeminiResponse = await response.json()
+      const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+
+      let parsed: RespostaAgente
+      try {
+        parsed = JSON.parse(rawText.trim())
+      } catch {
+        // modelo às vezes inclui markdown fence mesmo pedindo sem
+        const match = rawText.match(/\{[\s\S]*\}/)
+        if (match) {
+          parsed = JSON.parse(match[0])
+        } else {
+          return { mensagem: rawText || 'Não entendi sua pergunta. Pode reformular?', intencao: null }
+        }
+      }
+
+      if (parsed.intencao && parsed.filtros !== undefined) {
+        const resumoDados = await consultarDados(parsed.intencao as TipoIntencao, parsed.filtros ?? {})
+        if (resumoDados) {
+          parsed.resumoDados = resumoDados
+          parsed.mensagem = `${parsed.mensagem}\n\n📊 ${resumoDados}`
+        }
+      }
+
+      return parsed
+    } catch (err) {
+      console.error('Erro ao chamar Gemini:', err)
       return {
-        mensagem: 'Não consegui processar sua pergunta agora. Tente novamente em instantes.',
+        mensagem: 'Ocorreu um erro inesperado. Verifique sua conexão e tente novamente.',
         intencao: null,
       }
     }
+  }
 
-    const json: DeepSeekResponse = await response.json()
-    const rawText = json.choices?.[0]?.message?.content ?? ''
-
-    let parsed: RespostaAgente
-    try {
-      parsed = JSON.parse(rawText.trim())
-    } catch {
-      // modelo às vezes inclui markdown fence mesmo pedindo sem
-      const match = rawText.match(/\{[\s\S]*\}/)
-      if (match) {
-        parsed = JSON.parse(match[0])
-      } else {
-        return { mensagem: rawText || 'Não entendi sua pergunta. Pode reformular?', intencao: null }
-      }
-    }
-
-    if (parsed.intencao && parsed.filtros !== undefined) {
-      const resumoDados = await consultarDados(parsed.intencao as TipoIntencao, parsed.filtros ?? {})
-      if (resumoDados) {
-        parsed.resumoDados = resumoDados
-        parsed.mensagem = `${parsed.mensagem}\n\n📊 ${resumoDados}`
-      }
-    }
-
-    return parsed
-  } catch (err) {
-    console.error('Erro ao chamar DeepSeek:', err)
-    return {
-      mensagem: 'Ocorreu um erro inesperado. Verifique sua conexão e tente novamente.',
-      intencao: null,
-    }
+  return {
+    mensagem: 'Não foi possível obter resposta após várias tentativas. Tente novamente em instantes.',
+    intencao: null,
   }
 }
