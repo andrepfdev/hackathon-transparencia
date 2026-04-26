@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import { enviarMensagem } from '@/services/geminiAgent'
 import type { MensagemHistorico } from '@/services/geminiAgent'
+import { useSpeechRecognition } from '@/composables/useSpeechRecognition'
+import { useSpeechSynthesis } from '@/composables/useSpeechSynthesis'
 
 const router = useRouter()
 
@@ -41,6 +43,33 @@ let proximoId = 1
 
 const historico = ref<MensagemHistorico[]>([])
 
+// --- Voz ---
+const stt = useSpeechRecognition()
+const tts = useSpeechSynthesis()
+
+stt.onResult((texto) => {
+  inputTexto.value = texto
+  ajustarAlturaInput()
+})
+
+stt.onEnd(() => {
+  // auto-envia ao parar de falar se houver texto
+  if (inputTexto.value.trim()) {
+    enviar()
+  }
+})
+
+stt.onError((err) => {
+  if (err === 'not-allowed') {
+    alert('Permissão de microfone negada. Ative nas configurações do navegador.')
+  }
+})
+
+// Para TTS ao desmontar
+onUnmounted(() => tts.stop())
+
+// ---
+
 function rolarParaBaixo() {
   nextTick(() => {
     if (areaRef.value) {
@@ -67,6 +96,7 @@ async function enviar(textoOverride?: string) {
   const texto = (textoOverride ?? inputTexto.value).trim()
   if (!texto || carregando.value) return
 
+  tts.stop()
   inputTexto.value = ''
   if (inputRef.value) inputRef.value.style.height = 'auto'
 
@@ -83,7 +113,6 @@ async function enviar(textoOverride?: string) {
 
   historico.value.push({ role: 'user', text: texto })
   historico.value.push({ role: 'assistant', text: resposta.mensagem })
-  // mantém histórico enxuto (últimas 10 trocas)
   if (historico.value.length > 20) historico.value = historico.value.slice(-20)
 
   const idx = mensagens.value.findIndex((m) => m.id === idAgente)
@@ -101,6 +130,9 @@ async function enviar(textoOverride?: string) {
   carregando.value = false
   rolarParaBaixo()
   inputRef.value?.focus()
+
+  // TTS automático
+  tts.speak(resposta.mensagem)
 }
 
 function onKeydown(e: KeyboardEvent) {
@@ -112,6 +144,14 @@ function onKeydown(e: KeyboardEvent) {
 
 function navegarDetalhe(link: string) {
   router.push(link)
+}
+
+function alternarMicrofone() {
+  if (stt.isListening.value) {
+    stt.stop()
+  } else {
+    stt.start()
+  }
 }
 
 onMounted(() => {
@@ -135,19 +175,73 @@ onMounted(() => {
           >
             <i class="pi pi-arrow-left text-lg" aria-hidden="true" />
           </button>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-1 items-center gap-2">
             <span
               class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700"
               aria-hidden="true"
             >
               <i class="pi pi-sparkles text-sm" />
             </span>
-            <div>
+            <div class="flex-1">
               <h1 class="text-base font-semibold text-gray-900">Assistente de Transparência</h1>
               <p class="text-xs text-gray-500">Powered by Gemini · dados do MA</p>
             </div>
           </div>
+          <!-- Botão toggle TTS -->
+          <button
+            type="button"
+            class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition-colors"
+            :class="tts.isEnabled.value
+              ? 'text-blue-600 hover:bg-blue-50'
+              : 'text-gray-400 hover:bg-gray-100'"
+            :aria-label="tts.isEnabled.value ? 'Silenciar respostas por voz' : 'Ativar respostas por voz'"
+            :title="tts.isEnabled.value ? 'Som ativado' : 'Som desativado'"
+            @click="tts.toggle()"
+          >
+            <i
+              class="text-lg"
+              :class="tts.isEnabled.value ? 'pi pi-volume-up' : 'pi pi-volume-off'"
+              aria-hidden="true"
+            />
+          </button>
+          <!-- Botão parar narração -->
+          <button
+            v-if="tts.isSpeaking.value"
+            type="button"
+            class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-orange-500 hover:bg-orange-50 transition-colors"
+            aria-label="Parar narração"
+            title="Parar narração"
+            @click="tts.stop()"
+          >
+            <i class="pi pi-stop-circle text-lg" aria-hidden="true" />
+          </button>
         </div>
+      </div>
+
+      <!-- Banner "Ouvindo..." -->
+      <div
+        v-if="stt.isListening.value"
+        class="bg-red-50 border-b border-red-100 px-4 py-2"
+        role="status"
+        aria-live="assertive"
+      >
+        <div class="mx-auto flex max-w-3xl items-center gap-2 text-sm text-red-600">
+          <span class="inline-block h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
+          <span class="font-medium">Ouvindo...</span>
+          <span v-if="stt.interimTranscript.value" class="text-red-400 italic truncate">
+            {{ stt.interimTranscript.value }}
+          </span>
+          <span v-else class="text-red-400">fale sua pergunta</span>
+        </div>
+      </div>
+
+      <!-- Aviso browser sem suporte a voz -->
+      <div
+        v-if="!stt.isSupported.value"
+        class="bg-amber-50 border-b border-amber-100 px-4 py-2 text-center text-xs text-amber-700"
+        role="note"
+      >
+        Voz disponível apenas no Chrome ou Edge. Use o teclado para digitar.
       </div>
 
       <!-- Área de mensagens -->
@@ -248,7 +342,7 @@ onMounted(() => {
               ref="inputRef"
               v-model="inputTexto"
               rows="1"
-              placeholder="Digite sua pergunta sobre os dados do MA..."
+              placeholder="Digite ou use o microfone..."
               aria-label="Digite sua pergunta"
               class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
               style="min-height: 44px; max-height: 120px"
@@ -257,9 +351,30 @@ onMounted(() => {
               @keydown="onKeydown"
             />
           </div>
+
+          <!-- Botão microfone -->
+          <button
+            v-if="stt.isSupported.value"
+            type="button"
+            class="flex min-h-[48px] min-w-[48px] flex-shrink-0 items-center justify-center rounded-xl transition-all focus-visible:outline-2 focus-visible:outline-offset-2"
+            :class="stt.isListening.value
+              ? 'bg-red-500 text-white shadow-lg shadow-red-200 animate-pulse'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+            :aria-label="stt.isListening.value ? 'Parar gravação de voz' : 'Iniciar gravação de voz'"
+            :disabled="carregando"
+            @click="alternarMicrofone"
+          >
+            <i
+              class="text-base"
+              :class="stt.isListening.value ? 'pi pi-stop' : 'pi pi-microphone'"
+              aria-hidden="true"
+            />
+          </button>
+
+          <!-- Botão enviar -->
           <button
             type="button"
-            class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50 flex-shrink-0"
+            class="flex min-h-[48px] min-w-[48px] flex-shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Enviar pergunta"
             :disabled="carregando || !inputTexto.trim()"
             @click="enviar()"
