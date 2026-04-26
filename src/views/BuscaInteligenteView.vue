@@ -10,6 +10,33 @@ import { useSpeechSynthesis } from '@/composables/useSpeechSynthesis'
 
 const router = useRouter()
 
+function renderMarkdown(text: string): string {
+  const escaped = text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(?!\s)(.+?)(?<!\s)\*/g, '<em>$1</em>')
+
+  const linhas = escaped.split('\n')
+  const resultado: string[] = []
+  let dentroLista = false
+  for (const linha of linhas) {
+    const itemMatch = linha.match(/^\s*[*-]\s+(.+)/)
+    if (itemMatch) {
+      if (!dentroLista) { resultado.push('<ul class="list-disc pl-5 space-y-1 my-1">'); dentroLista = true }
+      resultado.push(`<li>${itemMatch[1]}</li>`)
+    } else {
+      if (dentroLista) { resultado.push('</ul>'); dentroLista = false }
+      resultado.push(linha)
+    }
+  }
+  if (dentroLista) resultado.push('</ul>')
+
+  return resultado
+    .join('\n')
+    .replace(/\n{2,}/g, '</p><p class="mt-2">')
+    .replace(/\n/g, '<br>')
+}
+
 interface Mensagem {
   id: number
   role: 'user' | 'agent'
@@ -280,7 +307,10 @@ onMounted(() => {
                   v-else
                   class="rounded-2xl rounded-tl-sm bg-white px-4 py-3 shadow-sm ring-1 ring-gray-100"
                 >
-                  <p class="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">{{ msg.texto }}</p>
+                  <div
+                    class="prose prose-sm max-w-none text-sm leading-relaxed text-gray-800 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_strong]:font-semibold"
+                    v-html="renderMarkdown(msg.texto)"
+                  />
                 </div>
                 <!-- Botão de ver detalhes -->
                 <button
