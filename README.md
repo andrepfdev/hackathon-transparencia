@@ -105,22 +105,24 @@ Chat conversacional em linguagem natural integrado a dados reais do portal.
 - Formato de saída: JSON estruturado com `mensagem`, `intencao`, `filtros`, `linkDetalhe`
 - Retry automático em erro 429 com backoff
 
-### Entrada por voz (STT)
+### Consulta por voz — Computação Afetiva aplicada ao acesso à informação
 
-Implementado com Web Speech API nativa do navegador:
+A interação por voz é o diferencial mais significativo do assistente sob a perspectiva da **Computação Afetiva**: a fala é um canal naturalmente carregado de estado emocional e representa a forma de comunicação mais acessível para cidadãos idosos, com baixa alfabetização digital ou em situação de ansiedade diante de interfaces complexas. Ao permitir que o cidadão simplesmente fale sua dúvida e receba uma resposta em áudio, o assistente elimina a barreira cognitiva imposta pelo formulário tradicional de filtros.
+
+**Entrada por voz (fala → texto):** Web Speech API nativa do navegador
 - Idioma: `pt-BR`
 - Sem bibliotecas externas, sem custo adicional
 - Disponível em Chrome, Edge e Safari
-- Feedback visual durante a escuta
+- Feedback visual durante a escuta (indicador de atividade do microfone)
 
-### Resposta em áudio (TTS)
+**Resposta em áudio (texto → fala):** Gemini 2.5 Flash TTS + Web Audio API
+- Voz: Aoede (português), com prosódia natural
+- Formato: PCM 16-bit, 24 kHz, mono
+- Textos divididos em fragmentos de até 200 caracteres, gerados em paralelo e reproduzidos em sequência para minimizar latência percebida
+- Pré-processamento afetivo: remove artefatos de markdown, converte valores monetários para linguagem falada (`R$ 1.234,56` → "mil duzentos e trinta e quatro reais e cinquenta e seis centavos") e percentuais para forma oral natural
+- Ativado automaticamente quando a entrada foi por microfone; o usuário pode desativar pelo controle de volume no cabeçalho
 
-Implementado com Gemini 2.5 Flash TTS e Web Audio API:
-- Voz: Aoede (português)
-- Formato de áudio: PCM 16-bit, 24 kHz, mono
-- Textos são divididos em fragmentos de até 200 caracteres, gerados em paralelo e reproduzidos em sequência para reduzir latência
-- Pré-processamento: remove markdown, converte valores monetários e percentuais para linguagem falada (ex: `R$ 1.234,56` → "mil duzentos e trinta e quatro reais e cinquenta e seis centavos")
-- Ativado automaticamente quando a entrada foi por microfone; pode ser desativado pelo usuário
+A escolha por síntese de voz via API de IA — em vez da Web Speech Synthesis nativa — resulta em uma resposta audível com qualidade e naturalidade significativamente superior, reduzindo a sensação de frieza típica de sistemas automatizados.
 
 ### Acessibilidade
 
@@ -140,14 +142,18 @@ Implementado com Gemini 2.5 Flash TTS e Web Audio API:
 
 Conformidade alvo: WCAG 2.1 Nível AA e eMAG 3.1.
 
-### Pesquisa de satisfação
+### Pesquisa de satisfação — Medição afetiva por página
 
-Componente `SatisfactionSurvey` presente em todas as páginas principais:
-- Avaliação de 1 a 5 estrelas
+O componente `SatisfactionSurvey` é o mecanismo de **medição de estado afetivo** do portal. Ao coletar a avaliação do cidadão imediatamente após a interação com cada seção, o sistema captura a resposta emocional ao conteúdo e à usabilidade antes que ela se dissolva — dado relevante para ciclos de melhoria centrados no usuário.
+
+A escala de 1 a 5 estrelas funciona como um instrumento de autorrelato de afeto, amplamente utilizado em Computação Afetiva para medir valência (positivo/negativo) de forma simples e culturalmente universal. O campo de comentário livre complementa com dados qualitativos sobre a experiência.
+
+- Avaliação de 1 a 5 estrelas (Muito ruim → Excelente)
 - Comentário opcional (até 200 caracteres)
 - Uma avaliação por página por sessão
-- Toast de confirmação após envio
-- Dados armazenados em memória de sessão via Pinia (sem backend no protótipo)
+- Toast de confirmação após envio, com transição suave
+- Dados armazenados em memória de sessão via Pinia
+- Páginas instrumentadas: Home, Busca Inteligente, Despesas, Remuneração, Página não encontrada
 
 ---
 
