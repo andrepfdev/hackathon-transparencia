@@ -432,14 +432,14 @@ onMounted(() => {
 
     <AppFooter />
 
-    <!-- Overlay fullscreen — bloqueia toda interação durante voz -->
+    <!-- Overlay fullscreen — mostra apenas durante geração do áudio -->
     <Transition name="fade">
       <div
-        v-if="enviouPorVoz && (carregando || tts.isLoadingAudio.value)"
+        v-if="tts.isLoadingAudio.value"
         class="fixed inset-0 z-50 flex items-center justify-center cursor-wait select-none backdrop-blur-md bg-white/50"
         role="status"
-        aria-live="assertive"
-        aria-label="Processando sua pergunta por voz"
+        aria-live="polite"
+        aria-label="Gerando áudio da resposta"
       >
         <div class="flex flex-col items-center gap-5 rounded-3xl bg-white px-12 py-8">
           <div class="flex items-end gap-1.5" style="height: 48px" aria-hidden="true">
@@ -450,7 +450,7 @@ onMounted(() => {
             <span class="equalizer-bar w-2.5 rounded-full bg-blue-500" style="--delay: 30ms" />
           </div>
           <p class="text-sm font-semibold tracking-wide text-gray-700">
-            {{ carregando ? 'Pesquisando resposta…' : 'Preparando áudio…' }}
+            Gerando áudio…
           </p>
         </div>
       </div>
