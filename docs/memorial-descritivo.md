@@ -175,6 +175,110 @@ Toda a interface foi construída com base em 320px (menor celular), expandindo p
 | `MostAccessedServices` | 6 cards dos serviços mais utilizados pelos cidadãos |
 | `InstitutionalLogos` | Faixa com logos dos órgãos da Rede Transparência MA |
 | `AppFooter` | Rodapé completo com links institucionais e SETRANSP |
+| `BuscaInteligenteView` | Assistente de IA conversacional com voz e síntese de dados |
+| `SatisfactionSurvey` | Pesquisa de satisfação por página com avaliação em estrelas |
+
+---
+
+## 5.1 Assistente de Transparência (IA)
+
+O **Assistente de Transparência** é uma interface de chat em linguagem natural que permite ao cidadão consultar dados públicos sem precisar conhecer filtros técnicos ou jargão contábil.
+
+### Arquitetura
+
+```
+Entrada do usuário (texto ou voz)
+↓
+[STT: Web Speech API, pt-BR] — opcional
+↓
+geminiAgent.ts → Gemini 2.5 Flash (JSON estruturado)
+↓
+Extração de intenção + filtros
+↓
+portalApi.ts → dados reais (mock em demo)
+↓
+Resposta enriquecida com estatísticas (📊)
+↓
+Renderização markdown + botão de detalhe
+↓
+[TTS: Gemini 2.5 Flash TTS, voz Aoede] — se entrada foi por voz
+```
+
+### Modelo e Prompt
+
+| Aspecto | Detalhe |
+|---|---|
+| **Modelo** | Gemini 2.5 Flash (`gemini-2.5-flash`) |
+| **Temperatura** | 0.3 (respostas consistentes e factuais) |
+| **Tokens máximos** | 1 024 por resposta |
+| **Formato de saída** | JSON obrigatório: `mensagem`, `intencao`, `filtros`, `linkDetalhe` |
+| **Retentativas** | Até 2 tentativas com backoff em erro 429 |
+
+O system prompt injeta dinamicamente: glossário técnico→cidadão (Thesaurus), mapeamento de sinônimos por área orçamentária, filtros disponíveis por categoria e data atual (para contextualizar anos relativos).
+
+### Reconhecimento de Voz (STT)
+
+Implementado via **Web Speech API** nativa do navegador:
+- Idioma: `pt-BR`
+- Modo: sessão única por ativação (não contínuo)
+- Resultados intermediários habilitados para feedback visual em tempo real
+- Fallback: campo de texto manual quando API não suportada pelo navegador
+
+### Síntese de Voz (TTS)
+
+Implementado via **Gemini 2.5 Flash TTS** com reprodução via Web Audio API:
+
+| Aspecto | Detalhe |
+|---|---|
+| **Endpoint** | `gemini-2.5-flash-preview-tts:generateContent` |
+| **Voz** | Aoede (português) |
+| **Formato** | PCM 16-bit, 24 kHz, mono |
+| **Chunking** | Texto dividido em fragmentos ≤ 200 caracteres; geração paralela, reprodução sequencial |
+| **Limite** | 500 caracteres por resposta (truncado em fronteira de sentença) |
+| **Pré-processamento** | Remove markdown; converte `R$ 1.234,56` → por extenso; converte `85,5%` → "85,5 por cento" |
+
+O assistente reproduz automaticamente a resposta em áudio quando a entrada foi feita por microfone. O usuário pode desativar o TTS pelo ícone de volume no cabeçalho.
+
+### Integração com Dados Reais
+
+Ao identificar a intenção do usuário, o agente consulta a API do portal e enriquece a resposta com estatísticas concretas:
+
+| Intenção | Dados retornados |
+|---|---|
+| `despesas` | Total de registros, total pago, total empenhado |
+| `servidores` | Total de servidores, folha total, média salarial |
+| `contratos` | Quantidade de contratos, valor total contratado |
+| `receitas` | Arrecadado, previsto, percentual de execução |
+
+### Histórico de Conversa
+
+O assistente mantém as últimas **20 mensagens** da sessão como contexto para o Gemini, permitindo perguntas de acompanhamento sem necessidade de repetir o tema.
+
+---
+
+## 5.2 Pesquisa de Satisfação (Feedback de Usabilidade)
+
+O componente `SatisfactionSurvey` coleta feedback do cidadão ao final de cada página visitada, permitindo mensurar a usabilidade percebida em diferentes seções do portal.
+
+### O que é coletado
+
+| Campo | Tipo | Obrigatório |
+|---|---|---|
+| Avaliação em estrelas | 1 a 5 (Muito ruim → Excelente) | Sim |
+| Comentário livre | Texto, máx. 200 caracteres | Não |
+| Página avaliada | Nome da rota (ex: `BuscaInteligente`) | Automático |
+| Timestamp | Milissegundos epoch | Automático |
+
+### Comportamento
+
+- Exibido automaticamente em todas as páginas instrumentadas
+- Oculto após envio — **uma avaliação por página por sessão**
+- Estado gerenciado por store Pinia (`useSatisfactionStore`)
+- Dados armazenados em memória de sessão (sem persistência em backend no protótipo)
+
+### Páginas instrumentadas
+
+`HomeView` · `BuscaInteligenteView` · `DespesasView` · `RemuneracaoView` · `NotFoundView`
 
 ---
 
@@ -192,6 +296,8 @@ Toda a interface foi construída com base em 320px (menor celular), expandindo p
 | Ícones com label | ❌ Sem aria-label | ✅ Todos rotulados |
 | Design system | Dois sistemas conflitantes | **Único e consistente** |
 | Busca com relevância | Retorna "1000 resultados" genéricos | **Por categoria com valores** |
+| Assistente por voz | ❌ Ausente | ✅ STT + TTS em português |
+| Feedback de usabilidade | ❌ Ausente | ✅ Por página, por sessão |
 
 ---
 
@@ -213,9 +319,12 @@ Toda a interface foi construída com base em 320px (menor celular), expandindo p
 - Página de Contratos com modalidade e situação
 - Página de Receitas com previsão vs. arrecadado
 
-### Fase 3 — Inteligência e Busca
-- Busca inteligente por termos e frases em linguagem natural
-- Chat de consulta integrado, consumindo os dados do portal
+### Fase 3 — Inteligência e Busca ✅ Concluída
+- ✅ Busca inteligente por linguagem natural (Gemini 2.5 Flash)
+- ✅ Chat de consulta integrado, consumindo os dados do portal
+- ✅ Entrada por voz (Web Speech API, pt-BR)
+- ✅ Resposta em áudio (Gemini TTS, voz Aoede)
+- ✅ Pesquisa de satisfação por página
 
 ### Fase 4 — Entrega
 - Integração com a API real quando disponível (`USE_REAL_API = true`)
