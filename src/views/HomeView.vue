@@ -8,6 +8,7 @@ import TransparencyNumbers from '@/components/TransparencyNumbers.vue'
 import MostAccessedServices from '@/components/MostAccessedServices.vue'
 import InstitutionalLogos from '@/components/InstitutionalLogos.vue'
 import CidadeTransparencia from '@/components/CidadeTransparencia.vue'
+import SatisfactionSurvey from '@/components/SatisfactionSurvey.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
 const router = useRouter()
@@ -37,6 +38,7 @@ onUnmounted(() => clearTimeout(timer))
       <InstitutionalLogos />
       <CidadeTransparencia />
     </main>
+    <SatisfactionSurvey />
     <AppFooter />
 
     <!-- Botão flutuante: Assistente IA -->

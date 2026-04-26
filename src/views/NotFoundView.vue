@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import SatisfactionSurvey from '@/components/SatisfactionSurvey.vue'
 
 const router = useRouter()
 
@@ -49,5 +50,7 @@ function voltarParaHome() {
         <span>Voltar para a página inicial</span>
       </button>
     </div>
+    
+    <SatisfactionSurvey class="w-full max-w-2xl mt-12" />
   </div>
 </template>
