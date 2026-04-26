@@ -37,10 +37,12 @@ function inteiroParaPalavras(n: number): string {
 }
 
 // Converte "R$ 10.897.234.567,89" → "10 bilhões, 897 milhões, 234 mil e 567 reais e 89 centavos"
+// Suporta separadores: ponto, espaço, NBSP ( ) e narrow NBSP ( )
 function moedaParaFala(match: string): string {
-  const semSimbolo = match.replace(/R\$\s*/, '').trim()
+  const semSimbolo = match.replace(/R\$/, '').trim()
   const [intStr = '', centStr = '00'] = semSimbolo.split(',')
-  const intNum = parseInt(intStr.replace(/\./g, ''), 10)
+  // Remove qualquer separador de milhar independente do formato do browser
+  const intNum = parseInt(intStr.replace(/[^0-9]/g, ''), 10)
   const centNum = parseInt(centStr.padEnd(2, '0').slice(0, 2), 10)
 
   if (isNaN(intNum)) return match
@@ -60,8 +62,8 @@ function prepararParaFala(text: string): string {
     .replace(/\*(.+?)\*/g, '$1')
     .replace(/#+\s/g, '')
     .replace(/📊/g, '')
-    // Converte valores monetários ANTES de qualquer outra limpeza
-    .replace(/R\$\s*[\d.]+(?:,\d{2})?/g, moedaParaFala)
+    // Converte valores monetários — regex cobre ponto, espaço, NBSP e narrow NBSP como separadores
+    .replace(/R\$[\s  ]*[\d.,\s  ]*\d,\d{2}/g, moedaParaFala)
     // Percentuais: "85%" → "85 por cento"
     .replace(/(\d+(?:,\d+)?)\s*%/g, '$1 por cento')
     // Números com separador de milhar soltos (ex: "1.234 registros")
