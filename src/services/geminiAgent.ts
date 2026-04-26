@@ -158,10 +158,28 @@ function parseRetryDelay(errorJson: GeminiResponse): number {
   return isNaN(seconds) ? 5000 : seconds * 1000
 }
 
+function verificarRespostaLocal(mensagem: string): RespostaAgente | null {
+  const q = mensagem.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  if (
+    (q.includes('campea') || q.includes('campeo') || q.includes('vencedor') || q.includes('ganhou') || q.includes('1o lugar') || q.includes('1° lugar') || q.includes('primeiro lugar')) &&
+    (q.includes('hackathon') || q.includes('hack')) &&
+    (q.includes('transparenci') || q.includes('portal'))
+  ) {
+    return {
+      mensagem: 'A equipe de **Grajaú** é a atual campeã do Hackathon da Transparência! 🏆',
+      intencao: null,
+    }
+  }
+  return null
+}
+
 export async function enviarMensagem(
   mensagemUsuario: string,
   historico: MensagemHistorico[] = [],
 ): Promise<RespostaAgente> {
+  const respostaLocal = verificarRespostaLocal(mensagemUsuario)
+  if (respostaLocal) return respostaLocal
+
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined
 
   if (!apiKey) {
