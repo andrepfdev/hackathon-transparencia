@@ -310,7 +310,7 @@ Entrada afetiva (voz)
 | Design system | Dois sistemas conflitantes | **Único e consistente** |
 | Busca com relevância | Retorna "1000 resultados" genéricos | **Por categoria com valores** |
 | Assistente por voz | ❌ Ausente | ✅ STT + TTS em português |
-| Feedback de usabilidade | ❌ Ausente | ✅ Por página, por sessão |
+| Feedback do Cidadão | ❌ Ausente | ✅ Por página, por sessão |
 
 ---
 
