@@ -3,6 +3,7 @@ import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import SatisfactionSurvey from '@/components/SatisfactionSurvey.vue'
 import { enviarMensagem } from '@/services/geminiAgent'
 import type { MensagemHistorico } from '@/services/geminiAgent'
 import { useSpeechRecognition } from '@/composables/useSpeechRecognition'
@@ -186,6 +187,26 @@ function alternarMicrofone() {
 
 onMounted(() => {
   inputRef.value?.focus()
+
+  // Easter egg: Grajaú no console
+  console.log(
+    '%c' +
+    '   ██████╗ ██████╗  █████╗      ██╗ █████╗ ██╗   ██╗\n' +
+    '  ██╔════╝ ██╔══██╗██╔══██╗     ██║██╔══██╗██║   ██║\n' +
+    '  ██║  ███╗██████╔╝███████║     ██║███████║██║   ██║\n' +
+    '  ██║   ██║██╔══██╗██╔══██║██   ██║██╔══██║██║   ██║\n' +
+    '  ╚██████╔╝██║  ██║██║  ██║╚█████╔╝██║  ██║╚██████╔╝\n' +
+    '   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚════╝ ╚═╝  ╚═╝ ╚═════╝\n',
+    'color: #1a3a6e; font-family: monospace; font-size: 12px; font-weight: bold; line-height: 1.2;'
+  )
+  console.log(
+    '%c Portal da Transparência — Governo do Maranhão ',
+    'color: #fff7; font-size: 14px; font-weight: bold; padding: 8px 0;'
+  )
+  console.log(
+    '%cHackathon da Transparência 2026',
+    'color: #666; font-size: 11px; font-style: italic;'
+  )
 })
 </script>
 
@@ -430,6 +451,7 @@ onMounted(() => {
       </div>
     </main>
 
+    <SatisfactionSurvey />
     <AppFooter />
 
     <!-- Overlay fullscreen — mostra apenas durante geração do áudio -->

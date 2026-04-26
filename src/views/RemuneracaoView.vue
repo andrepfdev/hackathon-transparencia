@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import SatisfactionSurvey from '@/components/SatisfactionSurvey.vue'
 import ToggleSwitch from 'primevue/toggleswitch'
 import { filtrarServidores } from '@/services/portalApi'
 import type { ServidorFiltros, ServidoresResponse } from '@/services/types/servidores'
@@ -703,6 +704,7 @@ function exportarPDF() {
       </div>
     </main>
 
+    <SatisfactionSurvey />
     <AppFooter class="print:hidden" />
   </div>
 </template>
