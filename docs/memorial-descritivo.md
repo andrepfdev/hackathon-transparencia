@@ -216,28 +216,28 @@ Renderização markdown + botão de detalhe
 
 O system prompt injeta dinamicamente: glossário técnico→cidadão (Thesaurus), mapeamento de sinônimos por área orçamentária, filtros disponíveis por categoria e data atual (para contextualizar anos relativos).
 
-### Reconhecimento de Voz (STT)
+### Consulta por Voz — Computação Afetiva Aplicada ao Acesso à Informação
 
-Implementado via **Web Speech API** nativa do navegador:
+A interação por voz é o diferencial mais significativo do assistente sob a perspectiva da **Computação Afetiva**. A fala é um canal naturalmente carregado de estado emocional e representa a forma de comunicação mais acessível para cidadãos idosos, com baixa alfabetização digital ou em situação de ansiedade diante de interfaces complexas de dados públicos. Ao permitir que o cidadão simplesmente fale sua dúvida e receba uma resposta em áudio com prosódia natural, o assistente elimina a barreira cognitiva imposta pelo formulário tradicional de filtros — e transforma a experiência de acesso à informação pública em um diálogo, não em um preenchimento de formulário.
+
+**Reconhecimento de Voz (STT):** Web Speech API nativa do navegador
 - Idioma: `pt-BR`
 - Modo: sessão única por ativação (não contínuo)
 - Resultados intermediários habilitados para feedback visual em tempo real
-- Fallback: campo de texto manual quando API não suportada pelo navegador
+- Fallback: campo de texto manual quando a API não é suportada pelo navegador
 
-### Síntese de Voz (TTS)
-
-Implementado via **Gemini 2.5 Flash TTS** com reprodução via Web Audio API:
+**Síntese de Voz (TTS):** Gemini 2.5 Flash TTS com reprodução via Web Audio API
 
 | Aspecto | Detalhe |
 |---|---|
 | **Endpoint** | `gemini-2.5-flash-preview-tts:generateContent` |
-| **Voz** | Aoede (português) |
+| **Voz** | Aoede (português), prosódia natural |
 | **Formato** | PCM 16-bit, 24 kHz, mono |
 | **Chunking** | Texto dividido em fragmentos ≤ 200 caracteres; geração paralela, reprodução sequencial |
 | **Limite** | 500 caracteres por resposta (truncado em fronteira de sentença) |
 | **Pré-processamento** | Remove markdown; converte `R$ 1.234,56` → por extenso; converte `85,5%` → "85,5 por cento" |
 
-O assistente reproduz automaticamente a resposta em áudio quando a entrada foi feita por microfone. O usuário pode desativar o TTS pelo ícone de volume no cabeçalho.
+A escolha por síntese via modelo de IA — em vez da Web Speech Synthesis nativa do navegador — resulta em qualidade e naturalidade de fala significativamente superiores, reduzindo a sensação de frieza característica de sistemas automatizados. O assistente reproduz a resposta em áudio automaticamente quando a entrada foi feita por microfone. O usuário pode desativar o TTS pelo ícone de volume no cabeçalho da página.
 
 ### Integração com Dados Reais
 
@@ -256,23 +256,36 @@ O assistente mantém as últimas **20 mensagens** da sessão como contexto para 
 
 ---
 
-## 5.2 Pesquisa de Satisfação (Feedback de Usabilidade)
+## 5.2 Pesquisa de Satisfação — Medição de Estado Afetivo por Página
 
-O componente `SatisfactionSurvey` coleta feedback do cidadão ao final de cada página visitada, permitindo mensurar a usabilidade percebida em diferentes seções do portal.
+O componente `SatisfactionSurvey` é o mecanismo de **medição de estado afetivo** do portal. Enquanto a consulta por voz representa a dimensão de *entrada afetiva* — o cidadão se expressa de forma natural — a pesquisa de satisfação representa a dimensão de *resposta afetiva*: o sistema captura a reação emocional do usuário à experiência vivida em cada seção.
+
+Na perspectiva da **Computação Afetiva**, coletar essa avaliação imediatamente após a interação, antes que a experiência emocional se dissolva, é essencial para obter dados válidos sobre o estado afetivo induzido pela interface. A escala de 1 a 5 estrelas é um instrumento de autorrelato de afeto amplamente utilizado em pesquisa, capturando a **valência afetiva** (positivo/negativo) de forma simples e culturalmente universal. O campo de comentário livre complementa com dados qualitativos, revelando *por que* o usuário se sentiu daquela forma.
+
+Juntos, o assistente por voz e a pesquisa de satisfação formam um ciclo afetivo básico no portal:
+
+```
+Entrada afetiva (voz)
+→ Processamento empático (IA em linguagem cidadã)
+→ Saída afetiva (áudio natural)
+→ Medição do estado resultante (pesquisa de satisfação)
+→ Dados para refinamento da experiência
+```
 
 ### O que é coletado
 
-| Campo | Tipo | Obrigatório |
+| Campo | Tipo | Papel na Computação Afetiva |
 |---|---|---|
-| Avaliação em estrelas | 1 a 5 (Muito ruim → Excelente) | Sim |
-| Comentário livre | Texto, máx. 200 caracteres | Não |
-| Página avaliada | Nome da rota (ex: `BuscaInteligente`) | Automático |
-| Timestamp | Milissegundos epoch | Automático |
+| Avaliação em estrelas | 1 a 5 (Muito ruim → Excelente) | Medida de valência afetiva |
+| Comentário livre | Texto, máx. 200 caracteres | Dado qualitativo de estado emocional |
+| Página avaliada | Nome da rota (ex: `BuscaInteligente`) | Contexto da experiência |
+| Timestamp | Milissegundos epoch | Rastreabilidade temporal |
 
 ### Comportamento
 
-- Exibido automaticamente em todas as páginas instrumentadas
-- Oculto após envio — **uma avaliação por página por sessão**
+- Exibido automaticamente ao final de cada página instrumentada
+- Oculto após envio — uma avaliação por página por sessão
+- Toast de confirmação com transição suave após o envio
 - Estado gerenciado por store Pinia (`useSatisfactionStore`)
 - Dados armazenados em memória de sessão (sem persistência em backend no protótipo)
 
