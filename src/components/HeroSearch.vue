@@ -96,7 +96,7 @@ function calcularSugestoes(query: string): Sugestao[] {
   // Fallback: assistente de IA
   resultado.push({
     titulo: `Perguntar sobre "${query.trim()}"`,
-    descricao: 'Consulta em linguagem natural com o assistente de IA',
+    descricao: 'Consulta conversada, fácil de entender.',
     rota: '/busca-inteligente',
     categoria: 'assistente',
   })
