@@ -6,7 +6,7 @@ import AppFooter from '@/components/AppFooter.vue'
 import { enviarMensagem } from '@/services/geminiAgent'
 import type { MensagemHistorico } from '@/services/geminiAgent'
 import { useSpeechRecognition } from '@/composables/useSpeechRecognition'
-import { useSpeechSynthesis } from '@/composables/useSpeechSynthesis'
+import { useGeminiTTS } from '@/composables/useGeminiTTS'
 
 const router = useRouter()
 
@@ -72,7 +72,7 @@ const historico = ref<MensagemHistorico[]>([])
 
 // --- Voz ---
 const stt = useSpeechRecognition()
-const tts = useSpeechSynthesis()
+const tts = useGeminiTTS()
 let enviouPorVoz = false
 
 stt.onResult((texto) => {
