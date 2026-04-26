@@ -6,7 +6,7 @@ import AppFooter from '@/components/AppFooter.vue'
 import { enviarMensagem } from '@/services/geminiAgent'
 import type { MensagemHistorico } from '@/services/geminiAgent'
 import { useSpeechRecognition } from '@/composables/useSpeechRecognition'
-import { useSpeechSynthesis } from '@/composables/useSpeechSynthesis'
+import { useGeminiTTS } from '@/composables/useGeminiTTS'
 
 const router = useRouter()
 
@@ -72,7 +72,8 @@ const historico = ref<MensagemHistorico[]>([])
 
 // --- Voz ---
 const stt = useSpeechRecognition()
-const tts = useSpeechSynthesis()
+const tts = useGeminiTTS()
+let enviouPorVoz = false
 
 stt.onResult((texto) => {
   inputTexto.value = texto
@@ -80,8 +81,8 @@ stt.onResult((texto) => {
 })
 
 stt.onEnd(() => {
-  // auto-envia ao parar de falar se houver texto
   if (inputTexto.value.trim()) {
+    enviouPorVoz = true
     enviar()
   }
 })
@@ -158,8 +159,10 @@ async function enviar(textoOverride?: string) {
   rolarParaBaixo()
   inputRef.value?.focus()
 
-  // TTS automático
-  tts.speak(resposta.mensagem)
+  if (enviouPorVoz) {
+    tts.speak(resposta.mensagem)
+    enviouPorVoz = false
+  }
 }
 
 function onKeydown(e: KeyboardEvent) {

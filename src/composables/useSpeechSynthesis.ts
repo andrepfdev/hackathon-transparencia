@@ -48,7 +48,9 @@ function moedaParaFala(match: string): string {
   if (isNaN(intNum)) return match
 
   let resultado = inteiroParaPalavras(intNum)
-  resultado += intNum === 1 ? ' real' : ' reais'
+  // "de reais" quando o valor é expresso em milhões ou bilhões
+  const usaDe = intNum >= 1_000_000
+  resultado += intNum === 1 ? ' real' : usaDe ? ' de reais' : ' reais'
   if (centNum > 0) resultado += ` e ${centNum} centavo${centNum > 1 ? 's' : ''}`
 
   return resultado
