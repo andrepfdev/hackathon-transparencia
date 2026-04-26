@@ -38,8 +38,13 @@ function montarSystemPrompt(): string {
     })
     .join('\n')
 
+  const hoje = new Date()
+  const dataAtual = hoje.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+
   return `Você é um assistente de transparência pública do Portal da Transparência do Maranhão (MA).
 Seu objetivo é ajudar cidadãos a consultar dados públicos usando linguagem simples e acessível.
+
+DATA ATUAL: ${dataAtual}. Use isso para contextualizar anos e períodos mencionados pelo usuário.
 
 CATEGORIAS DE DADOS DISPONÍVEIS:
 - despesas: gastos do governo estadual
