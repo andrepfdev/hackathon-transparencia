@@ -73,7 +73,7 @@ const historico = ref<MensagemHistorico[]>([])
 // --- Voz ---
 const stt = useSpeechRecognition()
 const tts = useGeminiTTS()
-let enviouPorVoz = false
+const enviouPorVoz = ref(false)
 
 stt.onResult((texto) => {
   inputTexto.value = texto
@@ -82,7 +82,7 @@ stt.onResult((texto) => {
 
 stt.onEnd(() => {
   if (inputTexto.value.trim()) {
-    enviouPorVoz = true
+    enviouPorVoz.value = true
     enviar()
   }
 })
@@ -114,10 +114,10 @@ function ajustarAlturaInput() {
 }
 
 const LINKS_DETALHE: Record<string, string> = {
-  '/despesas': 'Ver despesas detalhadas →',
-  '/servidores': 'Ver servidores públicos →',
-  '/contratos': 'Ver contratos →',
-  '/receitas': 'Ver receitas →',
+  '/despesas': 'Ver despesas detalhadas',
+  '/servidores': 'Ver servidores públicos',
+  '/contratos': 'Ver contratos',
+  '/receitas': 'Ver receitas',
 }
 
 async function enviar(textoOverride?: string) {
@@ -159,9 +159,9 @@ async function enviar(textoOverride?: string) {
   rolarParaBaixo()
   inputRef.value?.focus()
 
-  if (enviouPorVoz) {
+  if (enviouPorVoz.value) {
     tts.speak(resposta.mensagem)
-    enviouPorVoz = false
+    enviouPorVoz.value = false
   }
 }
 
@@ -190,7 +190,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-gray-50">
+  <div class="relative flex min-h-screen flex-col bg-gray-50">
     <AppHeader />
 
     <main id="main-content" tabindex="-1" class="flex flex-1 flex-col">
@@ -234,6 +234,15 @@ onMounted(() => {
               aria-hidden="true"
             />
           </button>
+          <!-- Carregando áudio TTS -->
+          <span
+            v-if="tts.isLoadingAudio.value"
+            class="flex min-h-[44px] min-w-[44px] items-center justify-center"
+            aria-label="Gerando áudio..."
+            title="Gerando áudio..."
+          >
+            <i class="pi pi-spin pi-spinner text-lg text-blue-400" aria-hidden="true" />
+          </span>
           <!-- Botão parar narração -->
           <button
             v-if="tts.isSpeaking.value"
@@ -422,5 +431,49 @@ onMounted(() => {
     </main>
 
     <AppFooter />
+
+    <!-- Overlay fullscreen — bloqueia toda interação durante voz -->
+    <Transition name="fade">
+      <div
+        v-if="enviouPorVoz && (carregando || tts.isLoadingAudio.value)"
+        class="fixed inset-0 z-50 flex items-center justify-center cursor-wait select-none backdrop-blur-md bg-white/50"
+        role="status"
+        aria-live="assertive"
+        aria-label="Processando sua pergunta por voz"
+      >
+        <div class="flex flex-col items-center gap-5 rounded-3xl bg-white px-12 py-8">
+          <div class="flex items-end gap-1.5" style="height: 48px" aria-hidden="true">
+            <span class="equalizer-bar w-2.5 rounded-full bg-blue-500" style="--delay: 0ms" />
+            <span class="equalizer-bar w-2.5 rounded-full bg-blue-400" style="--delay: 120ms" />
+            <span class="equalizer-bar w-2.5 rounded-full bg-blue-600" style="--delay: 60ms" />
+            <span class="equalizer-bar w-2.5 rounded-full bg-blue-400" style="--delay: 180ms" />
+            <span class="equalizer-bar w-2.5 rounded-full bg-blue-500" style="--delay: 30ms" />
+          </div>
+          <p class="text-sm font-semibold tracking-wide text-gray-700">
+            {{ carregando ? 'Pesquisando resposta…' : 'Preparando áudio…' }}
+          </p>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes equalizer {
+  0%, 100% { height: 6px; }
+  50%       { height: 44px; }
+}
+.equalizer-bar {
+  animation: equalizer 0.9s ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+</style>

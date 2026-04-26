@@ -53,6 +53,7 @@ function prepararParaFala(text: string): string {
 
 export function useGeminiTTS() {
   const isSpeaking = ref(false)
+  const isLoadingAudio = ref(false)
   const isEnabled = ref(true)
 
   let audioCtx: AudioContext | null = null
@@ -76,7 +77,7 @@ export function useGeminiTTS() {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined
     if (!apiKey) return
 
-    isSpeaking.value = true
+    isLoadingAudio.value = true
 
     try {
       const response = await fetch(`${GEMINI_TTS_URL}?key=${apiKey}`, {
@@ -97,14 +98,14 @@ export function useGeminiTTS() {
 
       if (!response.ok) {
         console.error('Gemini TTS error:', await response.text())
-        isSpeaking.value = false
+        isLoadingAudio.value = false
         return
       }
 
       const json = await response.json()
       const inlineData = json.candidates?.[0]?.content?.parts?.[0]?.inlineData
       if (!inlineData?.data) {
-        isSpeaking.value = false
+        isLoadingAudio.value = false
         return
       }
 
@@ -130,9 +131,12 @@ export function useGeminiTTS() {
       source.connect(ctx.destination)
       source.onended = () => { isSpeaking.value = false }
       currentSource = source
+      isLoadingAudio.value = false
+      isSpeaking.value = true
       source.start()
     } catch (err) {
       console.error('Gemini TTS error:', err)
+      isLoadingAudio.value = false
       isSpeaking.value = false
     }
   }
@@ -141,6 +145,7 @@ export function useGeminiTTS() {
     try { currentSource?.stop() } catch { /* já parou */ }
     currentSource = null
     isSpeaking.value = false
+    isLoadingAudio.value = false
   }
 
   function toggle() {
@@ -148,5 +153,5 @@ export function useGeminiTTS() {
     if (!isEnabled.value) stop()
   }
 
-  return { isSpeaking, isEnabled, speak, stop, toggle }
+  return { isSpeaking, isLoadingAudio, isEnabled, speak, stop, toggle }
 }
