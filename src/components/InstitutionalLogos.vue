@@ -18,18 +18,17 @@ const logos: Logo[] = [
 </script>
 
 <template>
-  <section class="py-8 px-4 bg-white border-t border-gray-100" aria-labelledby="logos-heading">
+  <section class="py-8 px-4 bg-gray-50 border-t border-gray-100" aria-labelledby="logos-heading">
     <div class="container">
       <h2
         id="logos-heading"
-        class="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6"
+        class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest mb-6"
       >
-        Rede Transparência — Órgãos participantes
+        Rede Transparência — Órgãos Participantes
       </h2>
 
-      <!-- overflow-x-auto para mobile quando não cabe em linha -->
       <div
-        class="flex items-center justify-start sm:justify-center gap-6 sm:gap-8 overflow-x-auto scrollbar-none pb-2 sm:pb-0 sm:flex-wrap"
+        class="flex items-center justify-start sm:justify-center gap-8 sm:gap-10 overflow-x-auto scrollbar-none pb-2 sm:pb-0 sm:flex-wrap"
         role="list"
       >
         <div
@@ -42,7 +41,7 @@ const logos: Logo[] = [
             :src="logo.src"
             :alt="logo.alt"
             loading="lazy"
-            class="h-10 sm:h-12 w-auto object-contain opacity-60 hover:opacity-100 transition-opacity duration-200 grayscale hover:grayscale-0"
+            class="h-10 sm:h-12 w-auto object-contain opacity-50 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-300"
           />
         </div>
       </div>

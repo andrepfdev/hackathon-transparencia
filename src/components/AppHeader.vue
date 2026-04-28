@@ -22,57 +22,62 @@ const socialLinks = [
 </script>
 
 <template>
-  <header class="bg-white shadow-sm border-b border-gray-100">
+  <header class="bg-white shadow-md">
     <AccessibilityBar />
 
-    <div class="container flex items-center justify-between py-3">
-      <div class="flex items-center gap-2 sm:gap-3">
-        <RouterLink to="/" class="flex items-center gap-2 sm:gap-3">
-          <img src="/img/brasao_ma.png" alt="Brasão do Estado do Maranhão" class="h-12  w-auto">
-        </RouterLink>
-        <div class="w-1 h-10 bg-blue-600 rounded-full hidden sm:block" aria-hidden="true" />
-        <RouterLink to="/" aria-label="Portal da Transparência - Governo do Estado do Maranhão">
-          <span class="text-base sm:text-xl font-bold text-[#1a3a6e] leading-tight block">Portal da Transparência</span>
-          <span class="text-xs text-gray-500">Governo do Estado do Maranhão</span>
-        </RouterLink>
-      </div>
+    <!-- Barra superior: logo + social + ma.gov.br -->
+    <div class="container flex items-center justify-between py-3 px-4">
+      <RouterLink to="/" aria-label="Portal da Transparência - Governo do Estado do Maranhão - Página inicial">
+        <img
+          src="/img/logo-oficial.png"
+          alt="Portal da Transparência — Governo do Estado do Maranhão"
+          class="h-14 w-auto object-contain"
+        />
+      </RouterLink>
 
-      <div class="flex items-center gap-3">
-        <nav class="hidden md:flex items-center gap-2" aria-label="Redes sociais">
+      <div class="flex items-center gap-4">
+        <nav class="hidden lg:flex items-center gap-2" aria-label="Redes sociais">
           <a
             v-for="social in socialLinks"
             :key="social.label"
             :href="social.href"
             :aria-label="social.label"
-            class="text-[#c0392b] hover:text-[#922b21] transition-colors"
+            class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-[#c0392b] hover:bg-red-50 transition-all"
           >
-            <i :class="social.icon" class="text-lg" />
+            <i :class="social.icon" class="text-base" />
           </a>
         </nav>
+
         <a
           href="https://www.ma.gov.br"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Portal do Governo do Maranhão (abre em nova aba)"
-          class="text-sm font-bold text-[#c0392b] leading-none"
+          class="text-xs font-bold text-white bg-[#c0392b] hover:bg-[#a93226] px-3 py-1.5 rounded-lg transition-colors tracking-wide"
         >
           MA.GOV.BR
         </a>
       </div>
     </div>
 
-    <nav class="bg-[#f0f4ff] border-t border-blue-100" aria-label="Menu principal">
-      <div class="container">
-        <ul class="hidden md:flex items-center gap-0.5 py-0.5">
+    <!-- Nav principal: fundo navy -->
+    <nav class="bg-[#1a3a6e]" aria-label="Menu principal">
+      <div class="container px-4">
+        <!-- Desktop -->
+        <ul class="hidden md:flex items-center">
           <li>
-            <RouterLink to="/" class="flex items-center px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm transition-colors" aria-label="Início">
+            <RouterLink
+              to="/"
+              class="flex items-center px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 text-sm transition-colors"
+              aria-label="Início"
+            >
               <i class="pi pi-home text-sm" aria-hidden="true" />
             </RouterLink>
           </li>
           <li v-for="link in navLinks" :key="link.label">
             <a
               :href="link.href"
-              class="flex items-center gap-1 px-3 py-2 text-[#1a3a6e] hover:bg-blue-50 rounded text-xs font-semibold uppercase tracking-wide transition-colors"
+              class="flex items-center gap-1.5 px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 text-xs font-medium uppercase tracking-wide transition-colors"
             >
               <i v-if="link.icon" :class="link.icon" class="text-xs" aria-hidden="true" />
               {{ link.label }}
@@ -80,13 +85,14 @@ const socialLinks = [
           </li>
         </ul>
 
-        <div class="md:hidden flex items-center justify-between py-1.5">
-          <RouterLink to="/" class="flex items-center gap-1 text-[#1a3a6e] text-sm font-medium">
-            <i class="pi pi-home text-sm" aria-hidden="true" />
+        <!-- Mobile -->
+        <div class="md:hidden flex items-center justify-between py-2">
+          <RouterLink to="/" class="flex items-center gap-2 text-white text-sm font-medium">
+            <i class="pi pi-home" aria-hidden="true" />
             <span>Início</span>
           </RouterLink>
           <button
-            class="flex items-center gap-1.5 text-[#1a3a6e] font-semibold text-sm px-2 py-1.5 rounded hover:bg-blue-50 transition-colors min-h-[44px]"
+            class="flex items-center gap-1.5 text-white px-2 py-1.5 rounded hover:bg-white/10 transition-colors min-h-[44px] text-sm font-medium"
             :aria-expanded="mobileMenuOpen"
             aria-controls="mobile-menu"
             @click="mobileMenuOpen = !mobileMenuOpen"
@@ -96,25 +102,25 @@ const socialLinks = [
           </button>
         </div>
 
-        <ul v-if="mobileMenuOpen" id="mobile-menu" class="md:hidden flex flex-col border-t border-blue-100 py-2 gap-0.5">
+        <ul v-if="mobileMenuOpen" id="mobile-menu" class="md:hidden flex flex-col border-t border-white/10 py-2 gap-0.5">
           <li v-for="link in navLinks" :key="link.label">
             <a
               :href="link.href"
-              class="flex items-center gap-2 px-3 py-3 text-[#1a3a6e] hover:bg-blue-50 rounded text-sm font-medium transition-colors min-h-[44px]"
+              class="flex items-center gap-2 px-3 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded text-sm transition-colors min-h-[44px]"
               @click="mobileMenuOpen = false"
             >
               <i v-if="link.icon" :class="link.icon" class="text-sm" aria-hidden="true" />
               {{ link.label }}
             </a>
           </li>
-          <li class="px-3 pt-3 pb-1 border-t border-blue-100 mt-1">
-            <nav class="flex gap-4" aria-label="Redes sociais">
+          <li class="px-3 pt-3 pb-1 border-t border-white/10 mt-1">
+            <nav class="flex gap-3" aria-label="Redes sociais">
               <a
                 v-for="social in socialLinks"
                 :key="social.label"
                 :href="social.href"
                 :aria-label="social.label"
-                class="text-[#c0392b] hover:text-[#922b21] transition-colors p-1"
+                class="text-white/60 hover:text-white transition-colors p-1"
               >
                 <i :class="social.icon" class="text-xl" />
               </a>
