@@ -60,7 +60,6 @@ function calcularSugestoes(query: string): Sugestao[] {
     if (!vistos.has(key)) { vistos.add(key); resultado.push(s) }
   }
 
-  // Funções orçamentárias (nome + sinônimos)
   for (const f of FUNCOES_ORCAMENTO) {
     const nomes = [normalizar(f.nome), ...f.sinonimos.map(normalizar)]
     if (nomes.some(n => n.includes(q) || q.includes(n))) {
@@ -68,7 +67,6 @@ function calcularSugestoes(query: string): Sugestao[] {
     }
   }
 
-  // Intenções por keywords (coloquiais e técnicos)
   for (const [intencao, keywords] of Object.entries(INTENCOES)) {
     const matched = (keywords as readonly string[]).some(k => {
       const kn = normalizar(k)
@@ -80,7 +78,6 @@ function calcularSugestoes(query: string): Sugestao[] {
     }
   }
 
-  // Termos técnicos do glossário → linguagem cidadã
   for (const [tecnico, cidadao] of Object.entries(TERMOS_TECNICOS)) {
     if (normalizar(tecnico).includes(q) || normalizar(cidadao).includes(q)) {
       const categoria = CATEGORIA_POR_TERMO[tecnico] ?? 'assistente'
@@ -93,7 +90,6 @@ function calcularSugestoes(query: string): Sugestao[] {
     }
   }
 
-  // Fallback: assistente de IA
   resultado.push({
     titulo: `Perguntar sobre "${query.trim()}"`,
     descricao: 'Consulta conversada, fácil de entender.',
@@ -179,39 +175,50 @@ const BADGE_LABEL: Record<Sugestao['categoria'], string> = {
 }
 
 const quickSearches = ['Salários', 'Licitações', 'Obras', 'Contratos']
+
+const stats = [
+  { label: 'Servidores ativos', value: '84,5 mil' },
+  { label: 'Folha/mês', value: 'R$ 620 mi' },
+  { label: 'Despesas em 2025', value: 'R$ 14,4 bi' },
+  { label: 'Contratos vigentes', value: '2.847' },
+]
 </script>
 
 <template>
   <section
-    class="relative border-b border-gray-800 py-12 px-4 md:py-20"
-    style="background-image: url('/img/cultura_maranhao.webp'); background-size: cover; background-position: center;"
+    class="relative"
+    style="background-image: url('/img/cultura_maranhao.webp'); background-size: cover; background-position: center top;"
   >
-    <!-- overlay escuro -->
-    <div class="absolute inset-0 bg-black/53" aria-hidden="true" />
+    <!-- Gradiente escuro com toque navy -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0d1f3c]/85 via-black/60 to-[#1a3a6e]/75" aria-hidden="true" />
 
-    <div class="relative container text-center">
-      <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 leading-tight drop-shadow-md">
-        O que você procura no Portal?
-      </h1>
-      <p class="text-blue-100 text-sm mb-6 max-w-md mx-auto drop-shadow">
-        Use termos simples. Ex: salário de servidores, obras na minha cidade, contratos de merenda.
+    <div class="relative container px-4 pt-14 pb-0 md:pt-22">
+      <!-- Tagline -->
+      <p class="text-center text-xs font-bold uppercase tracking-widest text-red-400 mb-3">
+        Portal da Transparência — Estado do Maranhão
       </p>
 
-      <!-- Campo de busca com dropdown -->
-      <div class="relative max-w-xl mx-auto mb-4">
+      <h1 class="text-center text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 leading-tight drop-shadow-lg max-w-2xl mx-auto">
+        O que você quer saber sobre o governo?
+      </h1>
+      <p class="text-center text-blue-200/90 text-sm mb-8 max-w-lg mx-auto leading-relaxed">
+        Consulte gastos, servidores, contratos e receitas com transparência total.
+      </p>
+
+      <!-- Campo de busca -->
+      <div class="relative max-w-2xl mx-auto mb-5">
         <div
-          class="flex items-stretch rounded-xl border border-gray-300 shadow-md bg-white overflow-visible
-                 focus-within:border-blue-500 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.2)] transition-all"
+          class="flex items-stretch rounded-2xl shadow-2xl bg-white overflow-visible border-2 border-transparent focus-within:border-blue-400 transition-all duration-200"
         >
           <label for="hero-search" class="sr-only">Buscar informações no Portal</label>
-          <form class="flex flex-1 items-center px-4" @submit.prevent="onSearch">
-            <i class="pi pi-search text-gray-400 mr-3 flex-shrink-0 text-sm" aria-hidden="true" />
+          <form class="flex flex-1 items-center px-5" @submit.prevent="onSearch">
+            <i class="pi pi-search text-gray-400 mr-3 flex-shrink-0 text-base" aria-hidden="true" />
             <input
               id="hero-search"
               v-model="searchQuery"
               type="text"
-              placeholder="Digite o que deseja encontrar..."
-              class="flex-1 text-sm text-gray-700 placeholder-gray-400 bg-transparent py-3.5 focus:outline-none"
+              placeholder="Ex: salários, obras, contratos de saúde..."
+              class="flex-1 text-sm text-gray-800 placeholder-gray-400 bg-transparent py-4 focus:outline-none"
               autocomplete="off"
               enterkeyhint="search"
               role="combobox"
@@ -225,11 +232,11 @@ const quickSearches = ['Salários', 'Licitações', 'Obras', 'Contratos']
           </form>
           <button
             type="button"
-            class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-5 sm:px-7 py-3.5 text-sm transition-colors flex-shrink-0 flex items-center gap-1.5 rounded-r-xl"
+            class="bg-[#c0392b] hover:bg-[#a93226] active:bg-[#922b21] text-white font-bold px-6 sm:px-8 py-4 text-sm transition-colors flex-shrink-0 flex items-center gap-2 rounded-r-2xl"
             @click="onSearch"
           >
-            <i class="pi pi-search text-xs" aria-hidden="true" />
-            Buscar
+            <i class="pi pi-search" aria-hidden="true" />
+            <span class="hidden sm:inline">Buscar</span>
           </button>
         </div>
 
@@ -246,7 +253,7 @@ const quickSearches = ['Salários', 'Licitações', 'Obras', 'Contratos']
             v-if="aberto && sugestoes.length"
             id="hero-suggestions"
             role="listbox"
-            class="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 text-left"
+            class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 text-left"
           >
             <li
               v-for="(s, i) in sugestoes"
@@ -283,16 +290,33 @@ const quickSearches = ['Salários', 'Licitações', 'Obras', 'Contratos']
         </Transition>
       </div>
 
-      <div class="flex items-center justify-center gap-2 flex-wrap">
-        <span class="text-xs text-blue-200">Populares:</span>
+      <!-- Buscas populares -->
+      <div class="flex items-center justify-center gap-2 flex-wrap mb-10">
+        <span class="text-xs text-blue-300 font-medium">Populares:</span>
         <button
           v-for="term in quickSearches"
           :key="term"
-          class="text-xs text-white hover:text-white border border-white/30 hover:border-white/60 rounded-full px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors min-h-[36px]"
+          class="text-xs text-white border border-white/25 hover:border-white/60 rounded-full px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all min-h-[36px]"
           @click="searchTerm(term)"
         >
           {{ term }}
         </button>
+      </div>
+    </div>
+
+    <!-- Barra de estatísticas -->
+    <div class="relative bg-[#1a3a6e]/90 backdrop-blur-sm border-t border-white/10">
+      <div class="container px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
+          <div
+            v-for="stat in stats"
+            :key="stat.label"
+            class="py-4 px-4 text-center"
+          >
+            <p class="text-white font-bold text-base sm:text-xl tabular-nums leading-none">{{ stat.value }}</p>
+            <p class="text-blue-300 text-xs mt-1 leading-snug">{{ stat.label }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
